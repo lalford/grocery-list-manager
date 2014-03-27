@@ -1,0 +1,15 @@
+@(recipes: List[Recipe])
+
+@groceryListWrapper("Recipes") {
+    <div id="accordion">
+        @for(recipe <- recipes) {
+            <h3>@recipe.name</h3>
+            <div>
+                <ul>
+                    <li>@recipe.servings servings</li>
+                    <li>@recipe.directions.getOrElse("")</li>
+                </ul>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,27 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET         /                                       controllers.Application.index
+GET         /clarion                                controllers.Application.clarion
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file                           controllers.Assets.at(path="/public", file)
+
+# views
+GET         /recipes/view                           controllers.RecipeController.viewRecipes
+
+# json apis
+GET         /recipes                                controllers.RecipeController.findRecipes
+GET         /recipes/:name                          controllers.RecipeController.findRecipe(name: String)
+POST        /recipes                                controllers.RecipeController.createRecipe
+PUT         /recipes                                controllers.RecipeController.updateRecipe
+
+GET         /migrate                                controllers.RecipeController.migrateData
+
+GET         /groceryLists                           controllers.GroceryListController.findGroceryLists
+GET         /groceryLists/:name                     controllers.GroceryListController.findGroceryList(name: String)
+POST        /groceryLists                           controllers.GroceryListController.createGroceryList
+PUT         /groceryLists                           controllers.GroceryListController.updateGroceryList
+GET         /groceryLists/:name/shoppingList        controllers.GroceryListController.generateShoppingList(name: String)
