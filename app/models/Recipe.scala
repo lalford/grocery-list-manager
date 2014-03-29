@@ -29,7 +29,6 @@ object JsonFormats {
   import play.api.data._
   import play.api.data.Forms._
 
-  // TODO - cannot have circular dependencies for serializer (recipe servings in recipe and recipe in recipe serving)
   implicit val foodIngredientFormat = Json.format[FoodIngredient]
   implicit val recipeServingFormat = Json.format[RecipeServing]
   implicit val recipeFormat = Json.format[Recipe]

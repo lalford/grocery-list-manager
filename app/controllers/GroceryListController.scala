@@ -3,7 +3,7 @@ package controllers
 import play.api.mvc.{Action, Controller}
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
-import play.api.libs.json.Json
+import play.api.libs.json.{JsError, Json}
 import scala.concurrent.{Promise, Future}
 import play.api.Logger
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -42,7 +42,9 @@ object GroceryListController extends Controller with MongoController {
         }
         case Some(l) => Future.successful(BadRequest(s"a grocery list already exists named [${l.name}]"))
       }
-    }.getOrElse(Future.successful(BadRequest("json is not valid as a grocery list")))
+    }.recoverTotal {
+      e => Future.successful(BadRequest("json is not valid as a grocery list:"+ JsError.toFlatJson(e)))
+    }
   }
 
   def updateGroceryList = Action.async(parse.json) { request =>

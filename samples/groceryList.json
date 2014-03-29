@@ -2,48 +2,19 @@
   "name" : "grocery list 1",
   "recipeServings" : [
     {
-      "recipe" : {
-        "name" : "recipe A",
-        "servings" : 4,
-        "ingredients" : [
-            {
-                "food" : "food W",
-                "quantity" : 2.4,
-                "unit" : "cups",
-                "storeSection" : "front"
-            },
-            {
-                "food" : "food X",
-                "quantity" : 6,
-                "unit" : "ounces",
-                "storeSection" : "back"
-            }
-        ],
-        "tags" : []
-      },
-      "desiredServings" : 2
+      "name" : "Baba Ganoush",
+      "desiredServings" : 5
     },
     {
-      "recipe" : {
-          "name" : "recipe B",
-          "servings" : 5,
-          "ingredients" : [
-              {
-                  "food" : "food X",
-                  "quantity" : 5,
-                  "unit" : "ounces",
-                  "storeSection" : "back"
-              }
-          ],
-          "tags" : []
-      },
+      "name" : "Chicken salad with grapes",
       "desiredServings" : 15
     }
   ],
   "miscellaneous" : [
     {
       "food" : "food Y",
-      "quantity" : 3
+      "quantity" : 3,
+      "unit" : "items"
     },
     {
       "food" : "food Z",
