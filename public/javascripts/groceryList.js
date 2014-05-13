@@ -1,6 +1,8 @@
 $(document).ready(function(){
-    $( "#accordion" ).accordion();
-    $( ".selector" ).accordion({ heightStyle: "content" });
+
+
+
+//    $( ".selector" ).accordion({ heightStyle: "content" });
 
 //    var recipes = [];
 //

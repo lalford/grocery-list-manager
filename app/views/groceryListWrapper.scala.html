@@ -1,31 +1,85 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html)(implicit navBarData: NavBarData)
 
 <!DOCTYPE html>
-
 <html>
     <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="@routes.Assets.at("images/favicon.png")">
+
         <title>@title</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/jquery-ui-1.10.4.css")">
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/default.css")">
-        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/fonts.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/dashboard.css")">
+
         <script src="@routes.Assets.at("javascripts/jquery-1.11.0.min.js")" type="text/javascript"></script>
-        <script src="@routes.Assets.at("javascripts/jquery-ui-1.10.4.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/groceryList.js")" type="text/javascript"></script>
     </head>
     <body>
-        <div id="header-wrapper">
-            <div id="header" class="container">
+        <!-- top nav -->
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">@title</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <div class="dropdown nav navbar-nav navbar-right">
+                        <a data-toggle="dropdown" href="#">Change Active List</a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                        @for(glNameUrl <- navBarData.groceryListNameUrlPairs) {
+                            <li>
+                                <a href="@glNameUrl._2">@glNameUrl._1</a>
+                            </li>
+                        }
+                        </ul>
+                    </div>
+
+
+                    <div class="nav navbar-nav navbar-right">
+                    @if(navBarData.activeGroceryListName.isDefined) {
+                        <a href="@navBarData.activeGroceryListUrl.get">View @navBarData.activeGroceryListName.get</a>
+                    } else {
+                        <a href="@navBarData.newGroceryListUrl">Create New Grocery List</a>
+                    }
+                    </div>
+
+                    <div class="nav navbar-nav navbar-right">
+
+                    </div>
+            </div>
+        </div>
+
+
+
+
+        <div id="pagewidth">
+            <div id="header">
                 <div id="logo">
                     <h1><a href="#">@title</a></h1>
                 </div>
+                <div id="active-grocery-list">
+                    <h2>TODO - add drop down of grocery lists with active one (based on cookie) selected</h2>
+                </div>
+                <!-- other stuff that belongs in top box here -->
             </div>
-            <div id="banner" class="container">
-                <p>TODO - maybe something useful here</p>
+            <div id="wrapper" class="clearfix">
+                <div id="leftcol">
+                    <h1>TODO - navigation links</h1>
+                    <!-- other left column stuff here -->
+                </div>
+                <div id="maincol">
+                    @content
+                    <!-- other main column stuff here -->
+                </div>
             </div>
-        </div>
-        <div id="page-wrapper">
-            @content
         </div>
     </body>
 </html>

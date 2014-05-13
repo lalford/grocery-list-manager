@@ -1,0 +1,25 @@
+@(groceryLists: List[GroceryList])(implicit navBarData: NavBarData)
+
+@groceryListWrapper("Grocery Lists") {
+    <div id="accordion-resizer" class="ui-widget-content">
+        <div id="accordion">
+        @for(groceryList <- groceryLists) {
+            <h3>@groceryList.name</h3>
+            <div>
+                <h5>Recipes</h5>
+                <ul>
+                    @for(recipes <- groceryList.recipeServings) {
+                        <li>@recipes.name</li>
+                    }
+                </ul>
+                <h5>A La Carte</h5>
+                <ul>
+                    @for(misc <- groceryList.miscellaneous) {
+                        <li>@misc.food</li>
+                    }
+                </ul>
+            </div>
+        }
+        </div>
+    </div>
+}

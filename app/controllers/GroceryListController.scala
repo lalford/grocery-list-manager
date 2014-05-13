@@ -8,19 +8,29 @@ import scala.concurrent.{Promise, Future}
 import play.api.Logger
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 
-object GroceryListController extends Controller with MongoController {
+object GroceryListController extends Controller with MongoController with TemplateData {
   def collection: JSONCollection = db.collection[JSONCollection]("grocery_lists")
 
   import models._
   import models.JsonFormats._
 
-  def findGroceryLists = Action.async {
-    val cursor = collection
-      .find(Json.obj())
-      .sort(Json.obj("name" -> -1))
-      .cursor[GroceryList]
-    val futureAllGroceryLists = cursor.collect[List]()
+  def viewGroceryLists = ActionWrapper.async { implicit requestWrapper =>
+    fetchGroceryLists map { allGroceryLists => Ok(views.html.groceryLists(allGroceryLists)) }
+  }
 
+  def viewGroceryList(name: String) = ActionWrapper.async { implicit requestWrapper =>
+    findGroceryListByName(name) map {
+      case None => NotFound
+      case Some(groceryList) => Ok(views.html.groceryList(groceryList))
+    }
+  }
+
+  def newGroceryList = ActionWrapper { implicit requestWrapper =>
+    Ok(views.html.newGroceryList())
+  }
+
+  def findGroceryLists = Action.async {
+    val futureAllGroceryLists = fetchGroceryLists
     futureAllGroceryLists map { allGroceryLists => Ok(Json.toJson(allGroceryLists)) }
   }
   
@@ -89,6 +99,14 @@ object GroceryListController extends Controller with MongoController {
         shoppingList.future map (sl => Ok(Json.toJson(sl)))
       }
     }
+  }
+
+  def fetchGroceryLists = {
+    val cursor = collection
+      .find(Json.obj())
+      .sort(Json.obj("name" -> 1))
+      .cursor[GroceryList]
+    cursor.collect[List]()
   }
 
   private def fetchRecipesAndServings(groceryList: GroceryList): Future[List[(Recipe, Double)]] = {

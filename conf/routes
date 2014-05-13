@@ -4,13 +4,18 @@
 
 # Home page
 GET         /                                       controllers.Application.index
-GET         /clarion                                controllers.Application.clarion
+GET         /bootstrap                              controllers.Application.bootstrap
+GET         /dashboard                              controllers.Application.dashboard
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                           controllers.Assets.at(path="/public", file)
 
 # views
 GET         /recipes/view                           controllers.RecipeController.viewRecipes
+
+GET         /groceryLists/view                      controllers.GroceryListController.viewGroceryLists
+GET         /groceryLists/:name/view                controllers.GroceryListController.viewGroceryList(name: String)
+GET         /groceryLists/new                       controllers.GroceryListController.newGroceryList
 
 # json apis
 GET         /recipes                                controllers.RecipeController.findRecipes
