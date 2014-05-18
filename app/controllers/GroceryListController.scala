@@ -101,6 +101,10 @@ object GroceryListController extends Controller with MongoController with Templa
     }
   }
 
+  def makeActiveGroceryList(name: String, redirectUrl: String) = Action {
+    Redirect(redirectUrl).withSession(activeGroceryListKey -> name)
+  }
+
   def fetchGroceryLists = {
     val cursor = collection
       .find(Json.obj())

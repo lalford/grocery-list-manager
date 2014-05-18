@@ -17,6 +17,8 @@ GET         /groceryLists/view                      controllers.GroceryListContr
 GET         /groceryLists/:name/view                controllers.GroceryListController.viewGroceryList(name: String)
 GET         /groceryLists/new                       controllers.GroceryListController.newGroceryList
 
+GET         /groceryLists/:name/makeActive          controllers.GroceryListController.makeActiveGroceryList(name: String, redirectUrl: String)
+
 # json apis
 GET         /recipes                                controllers.RecipeController.findRecipes
 GET         /recipes/:name                          controllers.RecipeController.findRecipe(name: String)

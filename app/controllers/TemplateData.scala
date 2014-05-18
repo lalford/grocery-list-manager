@@ -1,9 +1,10 @@
 package controllers
 
 trait TemplateData {
+  val activeGroceryListKey = "activeGroceryList"
 
   implicit def navBarData[A](implicit requestWrapper: RequestWrapper[A]) = {
-    val activeGroceryList = requestWrapper.session.get("activeGroceryList")
+    val activeGroceryList = requestWrapper.session.get(activeGroceryListKey)
     val activeGroceryListUrl = activeGroceryList.map(name => routes.GroceryListController.viewGroceryList(name).url)
     val newGroceryListUrl = routes.GroceryListController.newGroceryList.url
     val viewGroceryListsUrl = routes.GroceryListController.viewGroceryLists.url

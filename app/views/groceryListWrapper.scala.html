@@ -31,50 +31,40 @@
                     <a class="navbar-brand" href="#">@title</a>
                 </div>
                 <div class="navbar-collapse collapse">
-                    <div class="dropdown nav navbar-nav navbar-right">
-                        <a data-toggle="dropdown" href="#">Change Active List</a>
-                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                        @for(glNameUrl <- navBarData.groceryListNameUrlPairs) {
-                            <li>
-                                <a href="@glNameUrl._2">@glNameUrl._1</a>
-                            </li>
+                    <div class="nav navbar-nav navbar-left">
+                        <a href="@navBarData.viewGroceryListsUrl">View Grocery Lists</a>
+                        <a href="@navBarData.viewRecipesUrl">View Recipes</a>
+                    </div>
+
+                    <div class="nav navbar-nav navbar-right">
+                        <div>
+                        @if(navBarData.activeGroceryListName.isDefined) {
+                            <a href="@navBarData.activeGroceryListUrl.get">Current Active: @navBarData.activeGroceryListName.get</a>
+                        } else {
+                            <a href="@navBarData.newGroceryListUrl">Create New Grocery List</a>
                         }
-                        </ul>
+                        </div>
+
+                        <div class="dropdown">
+                            <a data-toggle="dropdown" href="#">Change Active List</a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            @for(glNameUrl <- navBarData.groceryListNameUrlPairs) {
+                                <li>
+                                    <a href="@glNameUrl._2">@glNameUrl._1</a>
+                                </li>
+                            }
+                            </ul>
+                        </div>
                     </div>
-
-
-                    <div class="nav navbar-nav navbar-right">
-                    @if(navBarData.activeGroceryListName.isDefined) {
-                        <a href="@navBarData.activeGroceryListUrl.get">View @navBarData.activeGroceryListName.get</a>
-                    } else {
-                        <a href="@navBarData.newGroceryListUrl">Create New Grocery List</a>
-                    }
-                    </div>
-
-                    <div class="nav navbar-nav navbar-right">
-
-                    </div>
+                </div>
             </div>
         </div>
 
-
-
-
         <div id="pagewidth">
             <div id="header">
-                <div id="logo">
-                    <h1><a href="#">@title</a></h1>
-                </div>
-                <div id="active-grocery-list">
-                    <h2>TODO - add drop down of grocery lists with active one (based on cookie) selected</h2>
-                </div>
                 <!-- other stuff that belongs in top box here -->
             </div>
             <div id="wrapper" class="clearfix">
-                <div id="leftcol">
-                    <h1>TODO - navigation links</h1>
-                    <!-- other left column stuff here -->
-                </div>
                 <div id="maincol">
                     @content
                     <!-- other main column stuff here -->
