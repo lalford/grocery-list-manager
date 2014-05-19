@@ -11,8 +11,6 @@ object ActionWrapper extends ActionBuilder[RequestWrapper] {
     val currentQueryStr = request.rawQueryString
     val redirectUrl = s"$currentUri$currentQueryStr"
 
-    Logger.info(s"redirect url = $redirectUrl")
-
     GroceryListController.fetchGroceryLists flatMap { groceryLists =>
       val glNameUrlPairs = groceryLists map { gl =>
         val url = routes.GroceryListController.makeActiveGroceryList(gl.name, redirectUrl).url

@@ -17,6 +17,7 @@ GET         /groceryLists/view                      controllers.GroceryListContr
 GET         /groceryLists/:name/view                controllers.GroceryListController.viewGroceryList(name: String)
 GET         /groceryLists/new                       controllers.GroceryListController.newGroceryList
 
+# set the active grocery list cookie
 GET         /groceryLists/:name/makeActive          controllers.GroceryListController.makeActiveGroceryList(name: String, redirectUrl: String)
 
 # json apis
@@ -32,3 +33,6 @@ GET         /groceryLists/:name                     controllers.GroceryListContr
 POST        /groceryLists                           controllers.GroceryListController.createGroceryList
 PUT         /groceryLists                           controllers.GroceryListController.updateGroceryList
 GET         /groceryLists/:name/shoppingList        controllers.GroceryListController.generateShoppingList(name: String)
+
+# form apis
+POST        /groceryLists/empty                     controllers.GroceryListController.createEmptyGroceryList

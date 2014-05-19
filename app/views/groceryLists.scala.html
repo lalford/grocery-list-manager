@@ -1,4 +1,4 @@
-@(groceryLists: List[GroceryList])(implicit navBarData: NavBarData)
+@(groceryLists: List[GroceryList])(implicit navBarData: NavBarData, flash: Flash)
 
 @groceryListWrapper("Grocery Lists") {
     <div id="accordion-resizer" class="ui-widget-content">

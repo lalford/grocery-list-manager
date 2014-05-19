@@ -1,4 +1,4 @@
-@(groceryList: GroceryList)(implicit navBarData: NavBarData)
+@(groceryList: GroceryList)(implicit navBarData: NavBarData, flash: Flash)
 
 @groceryListWrapper(groceryList.name) {
     <p>@groceryList</p>

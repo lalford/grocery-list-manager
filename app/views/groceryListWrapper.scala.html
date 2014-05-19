@@ -1,4 +1,4 @@
-@(title: String)(content: Html)(implicit navBarData: NavBarData)
+@(title: String)(content: Html)(implicit navBarData: NavBarData, flash: Flash)
 
 <!DOCTYPE html>
 <html>
@@ -34,6 +34,7 @@
                     <div class="nav navbar-nav navbar-left">
                         <a href="@navBarData.viewGroceryListsUrl">View Grocery Lists</a>
                         <a href="@navBarData.viewRecipesUrl">View Recipes</a>
+                        <a href="@navBarData.newGroceryListUrl">Create New Grocery List</a>
                     </div>
 
                     <div class="nav navbar-nav navbar-right">
@@ -62,6 +63,9 @@
 
         <div id="pagewidth">
             <div id="header">
+            @if(flash.get("result").isDefined) {
+                <h3>@flash.get("result").get</h3>
+            }
                 <!-- other stuff that belongs in top box here -->
             </div>
             <div id="wrapper" class="clearfix">

@@ -16,8 +16,8 @@ case class FoodIngredient( food: String,
                            storeSection: Option[String] = None )
 
 case class GroceryList( name: String,
-                        recipeServings: List[RecipeServing],
-                        miscellaneous: List[FoodIngredient],
+                        recipeServings: List[RecipeServing] = List(),
+                        miscellaneous: List[FoodIngredient] = List(),
                         created: Option[DateTime] = Some(DateTime.now) )
 
 case class RecipeServing(name: RecipeName, desiredServings: Double)
