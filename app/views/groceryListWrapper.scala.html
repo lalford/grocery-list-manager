@@ -19,6 +19,13 @@
         <script src="@routes.Assets.at("javascripts/bootstrap.min.js")" type="text/javascript"></script>
         <script src="@routes.Assets.at("javascripts/groceryList.js")" type="text/javascript"></script>
     </head>
+    <style>
+    th, td
+    {
+    padding: 5px;
+    color: #94a3a9 ;
+    }
+    </style>
     <body>
         <!-- top nav -->
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -31,9 +38,18 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <div class="nav navbar-nav navbar-left">
-                        <a href="@navBarData.viewGroceryListsUrl">View Grocery Lists</a>
-                        <a href="@navBarData.viewRecipesUrl">View Recipes</a>
-                        <a href="@navBarData.newGroceryListUrl">Create New Grocery List</a>
+                        <table>
+                            <tr>
+                                <td>Grocery Lists</td>
+                                <td><a href="@navBarData.viewGroceryListsUrl">View</a></td>
+                                <td><a href="@navBarData.newGroceryListUrl">Create</a></td>
+                            </tr>
+                            <tr>
+                                <td>Recipes</td>
+                                <td><a href="@navBarData.viewRecipesUrl">View</a></td>
+                                <td/>
+                            </tr>
+                        </table>
                     </div>
 
                     <div class="nav navbar-nav navbar-right">

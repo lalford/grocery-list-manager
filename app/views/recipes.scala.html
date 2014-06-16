@@ -1,17 +1,29 @@
 @(recipes: List[Recipe])(implicit navBarData: NavBarData, flash: Flash)
 
 @groceryListWrapper("Recipes") {
-    <div id="accordion-resizer" class="ui-widget-content">
-        <div id="accordion">
-            @for(recipe <- recipes) {
-                <h3>@recipe.name</h3>
-                <div>
-                    <ul>
-                        <li>@recipe.servings servings</li>
-                        <li>@recipe.directions.getOrElse("")</li>
-                    </ul>
+    <div class="panel-group" id="accordion">
+    @for(i <- 0 until recipes.length) {
+        @defining(recipes.drop(i).head) { recipe =>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse@i">
+                        @recipe.name
+                        </a>
+                    </h4>
                 </div>
-            }
-        </div>
+                <div id="collapse@i" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        <div>
+                            <ul>
+                                <li>@recipe.servings servings</li>
+                                <li>@recipe.directions.getOrElse("")</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
     </div>
 }
