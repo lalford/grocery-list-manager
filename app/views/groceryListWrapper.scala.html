@@ -41,36 +41,41 @@
                         <table>
                             <tr>
                                 <td>Grocery Lists</td>
-                                <td><a href="@navBarData.viewGroceryListsUrl">View</a></td>
+                                <td><a href="@navBarData.viewGroceryListsUrl">View All</a></td>
                                 <td><a href="@navBarData.newGroceryListUrl">Create</a></td>
                             </tr>
                             <tr>
                                 <td>Recipes</td>
-                                <td><a href="@navBarData.viewRecipesUrl">View</a></td>
-                                <td/>
+                                <td><a href="@navBarData.viewRecipesUrl">View All</a></td>
+                                <td>TODO</td>
                             </tr>
                         </table>
                     </div>
 
-                    <div class="nav navbar-nav navbar-right">
-                        <div>
-                        @if(navBarData.activeGroceryListName.isDefined) {
-                            <a href="@navBarData.activeGroceryListUrl.get">Current Active: @navBarData.activeGroceryListName.get</a>
-                        } else {
-                            <a href="@navBarData.newGroceryListUrl">Create New Grocery List</a>
-                        }
-                        </div>
-
-                        <div class="dropdown">
-                            <a data-toggle="dropdown" href="#">Change Active List</a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                            @for(glNameUrl <- navBarData.groceryListNameUrlPairs) {
-                                <li>
-                                    <a href="@glNameUrl._2">@glNameUrl._1</a>
-                                </li>
-                            }
-                            </ul>
-                        </div>
+                    <div class="nav navbar-nav" style="padding-left: 15px">
+                        <table>
+                            <tr>
+                                <td>
+                                @if(navBarData.activeGroceryListName.isDefined) {
+                                    <a href="@navBarData.activeGroceryListUrl.get">View @navBarData.activeGroceryListName.get</a>
+                                }
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="dropdown">
+                                        <a data-toggle="dropdown" href="#">Change Active List</a>
+                                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                        @for(glNameUrl <- navBarData.groceryListNameUrlPairs) {
+                                            <li>
+                                                <a href="@glNameUrl._2">@glNameUrl._1</a>
+                                            </li>
+                                        }
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
