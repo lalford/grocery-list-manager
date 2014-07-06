@@ -1,9 +1,9 @@
-@(emptyGroceryListForm: Form[EmptyGroceryList])(implicit navBarData: NavBarData, flash: Flash)
+@(emptyGroceryListForm: Form[String])(implicit navBarData: NavBarData, flash: Flash)
 
 @import helper.{form, inputText}
 
 @groceryListWrapper("Create Grocery List") {
-    @form(action = routes.GroceryListController.createEmptyGroceryList()) {
-        @inputText(emptyGroceryListForm("name"))
-    }
+  @form(action = routes.GroceryListController.createEmptyGroceryList()) {
+    @inputText(emptyGroceryListForm("name"))
+  }
 }

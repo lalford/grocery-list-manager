@@ -18,14 +18,17 @@ import reactivemongo.api._
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
 
-object RecipeController extends Controller with MongoController with TemplateData {
+object RecipeController extends Controller with MongoController with TemplateData with RequestHelpers {
   def collection: JSONCollection = db.collection[JSONCollection]("recipes")
 
   import models._
   import models.JsonFormats._
 
   def viewRecipes = ActionWrapper.async { implicit requestWrapper =>
-    fetchRecipes map { allRecipes => Ok(views.html.recipes(allRecipes)) }
+    fetchRecipes map { allRecipes =>
+      val recipesWithForm = allRecipes.map(r => r -> recipeServingForm.fill(RecipeServing(r.name, 0)))
+      Ok(views.html.recipes(recipesWithForm))
+    }
   }
 
   def findRecipes = Action.async {

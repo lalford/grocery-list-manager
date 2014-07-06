@@ -36,3 +36,4 @@ GET         /groceryLists/:name/shoppingList        controllers.GroceryListContr
 
 # form apis
 POST        /groceryLists/empty                     controllers.GroceryListController.createEmptyGroceryList
+PUT         /groceryLists/:name/addRecipeServings   controllers.GroceryListController.addRecipeServings(name: String)

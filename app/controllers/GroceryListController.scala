@@ -7,11 +7,9 @@ import play.api.libs.json.{JsError, Json}
 import scala.concurrent.{Promise, Future}
 import play.api.Logger
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.data._
-import play.api.data.Forms._
 import scala.util.{Failure, Success}
 
-object GroceryListController extends Controller with MongoController with TemplateData with EmptyGroceryListHelper {
+object GroceryListController extends Controller with MongoController with TemplateData with RequestHelpers {
   def collection: JSONCollection = db.collection[JSONCollection]("grocery_lists")
 
   import models._
@@ -47,11 +45,11 @@ object GroceryListController extends Controller with MongoController with Templa
   def createEmptyGroceryList = Action.async { implicit request =>
     emptyGroceryListForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest("grocery list name cannot be empty")),
-      emptyGroceryList => {
+      emptyGroceryListName => {
         val result = Promise[SimpleResult]()
-        insertGroceryList(GroceryList(emptyGroceryList.name)).onComplete {
+        insertGroceryList(GroceryList(emptyGroceryListName)).onComplete {
           case Success(call) =>
-            result.success(Redirect(call).flashing("result" -> s"Grocery List Created - ${emptyGroceryList.name}"))
+            result.success(Redirect(call).flashing("result" -> s"Grocery List Created - $emptyGroceryListName"))
           case Failure(e) if e.isInstanceOf[IllegalArgumentException] =>
             result.success(Redirect(routes.GroceryListController.newGroceryList).flashing("result" -> s"Failed - ${e.getMessage}"))
           case Failure(e) =>
@@ -75,6 +73,13 @@ object GroceryListController extends Controller with MongoController with Templa
         result.future
       }
     )
+  }
+
+  def addRecipeServings(name: String) = Action.async { implicit request =>
+    Future.successful(NotImplemented)
+//    recipeServingForm.bindFromRequest.fold(
+//      formWithErrors => Future.successful(BadRequest())
+//    )
   }
 
   def updateGroceryList = Action.async(parse.json) { request =>
@@ -213,11 +218,4 @@ object GroceryListController extends Controller with MongoController with Templa
       else Future.successful(groceryLists.headOption)
     }
   }
-}
-
-case class EmptyGroceryList(name: String)
-trait EmptyGroceryListHelper {
-  val emptyGroceryListForm = Form(
-    mapping("name" -> nonEmptyText)(EmptyGroceryList.apply)(EmptyGroceryList.unapply)
-  )
 }
