@@ -1,9 +1,11 @@
 @(emptyGroceryListForm: Form[String])(implicit navBarData: NavBarData, flash: Flash)
 
 @import helper.{form, inputText}
+@import helper.twitterBootstrap._
 
-@groceryListWrapper("Create Grocery List") {
+@pageLayout {
   @form(action = routes.GroceryListController.createEmptyGroceryList()) {
     @inputText(emptyGroceryListForm("name"))
+    <input type="submit" value="Create">
   }
 }

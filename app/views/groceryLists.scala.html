@@ -1,6 +1,6 @@
 @(groceryLists: List[GroceryList])(implicit navBarData: NavBarData, flash: Flash)
 
-@groceryListWrapper("Grocery Lists") {
+@pageLayout {
   <div class="panel-group" id="accordion">
   @for(i <- 0 until groceryLists.length) {
     @defining(groceryLists.drop(i).head) { groceryList =>

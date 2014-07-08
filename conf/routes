@@ -4,8 +4,6 @@
 
 # Home page
 GET         /                                       controllers.Application.index
-GET         /bootstrap                              controllers.Application.bootstrap
-GET         /dashboard                              controllers.Application.dashboard
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                           controllers.Assets.at(path="/public", file)
@@ -36,4 +34,4 @@ GET         /groceryLists/:name/shoppingList        controllers.GroceryListContr
 
 # form apis
 POST        /groceryLists/empty                     controllers.GroceryListController.createEmptyGroceryList
-PUT         /groceryLists/:name/addRecipeServings   controllers.GroceryListController.addRecipeServings(name: String)
+POST        /groceryLists/:name/addRecipeServings   controllers.GroceryListController.addRecipeServings(name: String)

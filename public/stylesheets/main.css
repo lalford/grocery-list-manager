@@ -15,14 +15,14 @@ h1 { font-size: 2.0vmax; }
 
 #header {
   background: #7188A0;
-  padding: 15px 0 15px 15px;
+  padding: 10px 0 10px 10px;
 }
 
 #content {
 }
 
 #main-content {
-  margin-top: 15px;
+  margin-top: 10px;
   margin-right: 0.5vmin;
   margin-left: 0.5vmin;
   width: auto;
@@ -47,4 +47,12 @@ h1 { font-size: 2.0vmax; }
   font-size: 2.3em;
   margin-top: 15px;
   float: bottom;
+}
+
+.add-servings-form {
+  display: inline;
+}
+
+.ingredients-td {
+  padding: 10px;
 }

@@ -12,7 +12,8 @@ object ActionWrapper extends ActionBuilder[RequestWrapper] {
     val redirectUrl = s"$currentUri$currentQueryStr"
 
     GroceryListController.fetchGroceryLists flatMap { groceryLists =>
-      val glNameUrlPairs = groceryLists map { gl =>
+      val sorted = groceryLists sortWith(_.name < _.name)
+      val glNameUrlPairs = sorted map { gl =>
         val url = routes.GroceryListController.makeActiveGroceryList(gl.name, redirectUrl).url
         (gl.name, url)
       }

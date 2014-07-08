@@ -29,11 +29,4 @@ object Application extends Controller {
     Ok(views.html.index("Your new application is ready."))
   }
 
-  def bootstrap = Action {
-    Ok(views.html.bootstrapSample())
-  }
-
-  def dashboard = Action {
-    Ok(views.html.bootstrapDashboard())
-  }
 }
