@@ -1,11 +1,11 @@
-@(recipesWithForm: List[(Recipe, Form[RecipeServing])])(implicit navBarData: NavBarData, flash: Flash)
+@(recipes: List[Recipe])(implicit navBarData: NavBarData, flash: Flash)
 
 @import helper._
 
 @pageLayout {
   <div class="panel-group" id="accordion">
-  @for(i <- 0 until recipesWithForm.length) {
-    @defining(recipesWithForm.drop(i).head) { case (recipe, recipeServingForm) =>
+  @for(i <- 0 until recipes.length) {
+    @defining(recipes.drop(i).head) { recipe =>
       <div class="panel panel-default">
         <div class="panel-heading">
           <h4 class="panel-title">
@@ -20,10 +20,10 @@
             <h5>Add Servings to @navBarData.activeGroceryListName.get</h5>
             <br>
             @form(action = routes.GroceryListController.addRecipeServings(navBarData.activeGroceryListName.get), 'class -> "add-servings-form") {
-              <input type="hidden" value="@recipeServingForm.get.name">
-              <label>Servings</label>
-              <input type="text" value="0.0">
-              <input type="submit" value="Add to @navBarData.activeGroceryListName.get">
+              <input type="hidden" name="activeGroceryList" value="@navBarData.activeGroceryListName.get">
+              <input type="hidden" name="recipeServing.name" value="@recipe.name">
+              <input type="text" name="recipeServing.desiredServings" value="0.0">
+              <input type="submit" value="Add">
             }
           }
             <h5>Makes @recipe.servings Servings</h5>

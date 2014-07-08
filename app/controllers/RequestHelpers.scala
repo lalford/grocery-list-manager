@@ -9,13 +9,18 @@ trait RequestHelpers {
     single("name" -> nonEmptyText)
   )
 
-  val recipeServingForm = Form(
+  val addRecipeServingForm = Form(
     mapping(
-      "name" -> nonEmptyText,
-      "desiredServings" -> bigDecimal
-    )(recipeServingApply)(recipeServingUnapply)
+      "activeGroceryList" -> nonEmptyText,
+      "recipeServing" -> mapping(
+        "name" -> nonEmptyText,
+        "desiredServings" -> bigDecimal
+      )(recipeServingApply)(recipeServingUnapply)
+    )(AddRecipeServing.apply)(AddRecipeServing.unapply)
   )
 
   def recipeServingApply(name: RecipeName, desiredServings: BigDecimal) = RecipeServing(name, desiredServings.toDouble)
   def recipeServingUnapply(recipeServing: RecipeServing) = Some( (recipeServing.name, BigDecimal(recipeServing.desiredServings)) )
 }
+
+case class AddRecipeServing(activeGroceryList: String, recipeServing: RecipeServing)

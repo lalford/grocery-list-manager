@@ -76,10 +76,16 @@ object GroceryListController extends Controller with MongoController with Templa
   }
 
   def addRecipeServings(name: String) = Action.async { implicit request =>
-    Future.successful(NotImplemented)
-//    recipeServingForm.bindFromRequest.fold(
-//      formWithErrors => Future.successful(BadRequest())
-//    )
+    def addToList(addRecipeServingData: AddRecipeServing) = {
+      val msg = s"this should add ${addRecipeServingData.recipeServing.desiredServings} servings of ${addRecipeServingData.recipeServing.name} to list ${addRecipeServingData.activeGroceryList}"
+      Logger.info(msg)
+      Future.successful(NotImplemented(msg))
+    }
+
+    addRecipeServingForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest(s"could not bind form data for adding recipe servings. ${formWithErrors.errors.map(_.message).mkString}")),
+      addToList
+    )
   }
 
   def updateGroceryList = Action.async(parse.json) { request =>

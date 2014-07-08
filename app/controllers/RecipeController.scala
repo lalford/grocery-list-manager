@@ -26,8 +26,7 @@ object RecipeController extends Controller with MongoController with TemplateDat
 
   def viewRecipes = ActionWrapper.async { implicit requestWrapper =>
     fetchRecipes map { allRecipes =>
-      val recipesWithForm = allRecipes.map(r => r -> recipeServingForm.fill(RecipeServing(r.name, 0)))
-      Ok(views.html.recipes(recipesWithForm))
+      Ok(views.html.recipes(allRecipes))
     }
   }
 
