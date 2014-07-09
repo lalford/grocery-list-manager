@@ -55,6 +55,18 @@
       </div>
 
       <div id="main-content">
+        @flash.get("success").map { msg =>
+          <div id="success-flashing">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @msg
+          </div>
+        }
+        @flash.get("error").map { err =>
+          <div id="error-flashing">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            @err
+          </div>
+        }
         @content
       </div>
     </div>
