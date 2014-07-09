@@ -11,6 +11,7 @@ trait TemplateData {
     val viewRecipesUrl = routes.RecipeController.viewRecipes.url
 
     NavBarData(
+      requestWrapper.path,
       requestWrapper.groceryListNameUrlPairs,
       activeGroceryList,
       activeGroceryListUrl,
@@ -19,10 +20,10 @@ trait TemplateData {
       viewRecipesUrl
     )
   }
-
 }
 
-case class NavBarData( groceryListNameUrlPairs: List[(String, String)],
+case class NavBarData( lastUrl: String,
+                       groceryListNameUrlPairs: List[(String, String)],
                        activeGroceryListName: Option[String],
                        activeGroceryListUrl: Option[String],
                        newGroceryListUrl: String,

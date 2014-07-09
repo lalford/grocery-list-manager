@@ -20,6 +20,7 @@
             <h5>Add Servings to @navBarData.activeGroceryListName.get</h5>
             <br>
             @form(action = routes.GroceryListController.addRecipeServings(navBarData.activeGroceryListName.get), 'class -> "add-servings-form") {
+              <input type="hidden" name="redirectUrl" value="@navBarData.lastUrl">
               <input type="hidden" name="activeGroceryList" value="@navBarData.activeGroceryListName.get">
               <input type="hidden" name="recipeServing.name" value="@recipe.name">
               <input type="text" name="recipeServing.desiredServings" value="0.0">

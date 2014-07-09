@@ -11,6 +11,7 @@ trait RequestHelpers {
 
   val addRecipeServingForm = Form(
     mapping(
+      "redirectUrl" -> nonEmptyText,
       "activeGroceryList" -> nonEmptyText,
       "recipeServing" -> mapping(
         "name" -> nonEmptyText,
@@ -23,4 +24,4 @@ trait RequestHelpers {
   def recipeServingUnapply(recipeServing: RecipeServing) = Some( (recipeServing.name, BigDecimal(recipeServing.desiredServings)) )
 }
 
-case class AddRecipeServing(activeGroceryList: String, recipeServing: RecipeServing)
+case class AddRecipeServing(redirectUrl: String, activeGroceryList: String, recipeServing: RecipeServing)

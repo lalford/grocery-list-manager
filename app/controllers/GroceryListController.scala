@@ -4,6 +4,7 @@ import play.api.mvc.{Call, SimpleResult, Action, Controller}
 import play.modules.reactivemongo.MongoController
 import play.modules.reactivemongo.json.collection.JSONCollection
 import play.api.libs.json.{JsError, Json}
+import reactivemongo.core.commands.LastError
 import scala.concurrent.{Promise, Future}
 import play.api.Logger
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -77,13 +78,58 @@ object GroceryListController extends Controller with MongoController with Templa
 
   def addRecipeServings(name: String) = Action.async { implicit request =>
     def addToList(addRecipeServingData: AddRecipeServing) = {
-      val msg = s"this should add ${addRecipeServingData.recipeServing.desiredServings} servings of ${addRecipeServingData.recipeServing.name} to list ${addRecipeServingData.activeGroceryList}"
-      Logger.info(msg)
-      Future.successful(NotImplemented(msg))
+      val redirectUrl = addRecipeServingData.redirectUrl
+      val activeGroceryList = addRecipeServingData.activeGroceryList
+      val recipeName = addRecipeServingData.recipeServing.name
+      val desiredServings = addRecipeServingData.recipeServing.desiredServings
+
+      val lastErrorPromise = Promise[LastError]()
+      val resultPromise = Promise[SimpleResult]()
+
+      findGroceryListByName(activeGroceryList) onComplete {
+        case Success(groceryListOpt) =>
+          if (groceryListOpt.isEmpty)
+            lastErrorPromise.failure(new IllegalStateException(s"could not find active grocery list $activeGroceryList"))
+          else {
+            val newRecipeServing = RecipeServing(recipeName, desiredServings)
+            val groceryList = groceryListOpt.get
+            val newRecipeServings = newRecipeServing :: groceryList.recipeServings
+            val updatedGroceryList = groceryList.copy(recipeServings = newRecipeServings)
+
+            collection
+            .update(Json.obj("name" -> groceryList.name), updatedGroceryList)
+            .map { lastError =>
+              Logger.debug(s"Successfully updated ${groceryList.name} with LastError: $lastError")
+              lastErrorPromise.success(lastError)
+            }
+            .recover {
+              case t => lastErrorPromise.failure(t)
+            }
+          }
+        case Failure(t) =>
+          lastErrorPromise.failure(t)
+      }
+
+      lastErrorPromise.future onComplete {
+        case Success(lastError) =>
+          if (lastError.ok)
+            resultPromise.success(Redirect(redirectUrl).flashing("success" -> s"added $desiredServings servings of $recipeName to list $activeGroceryList"))
+          else {
+            val err = s"failed to add $desiredServings servings of $recipeName to list $activeGroceryList"
+            Logger.error(s"$err. ${lastError.message}")
+            resultPromise.success(Redirect(redirectUrl).flashing("error" -> err))
+          }
+        case Failure(t) =>
+          val err = s"failed to add $desiredServings servings of $recipeName to list $activeGroceryList"
+          Logger.error(err, t)
+          resultPromise.success(Redirect(redirectUrl).flashing("error" -> err))
+      }
+
+      resultPromise.future
     }
 
     addRecipeServingForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest(s"could not bind form data for adding recipe servings. ${formWithErrors.errors.map(_.message).mkString}")),
+      formWithErrors => Future.successful(BadRequest(s"add recipe servings form invalid. ${formWithErrors.errors.map(_.message).mkString}")),
       addToList
     )
   }
