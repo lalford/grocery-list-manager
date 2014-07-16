@@ -13,22 +13,7 @@
           </h4>
         </div>
         <div id="collapse@i" class="panel-collapse collapse">
-          <div class="panel-body">
-            <div>
-              <h5>Recipes</h5>
-              <ul>
-              @for(recipes <- groceryList.recipeServings) {
-                <li>@recipes.name</li>
-              }
-              </ul>
-              <h5>A La Carte</h5>
-              <ul>
-              @for(misc <- groceryList.miscellaneous) {
-                <li>@misc.food</li>
-              }
-              </ul>
-            </div>
-          </div>
+          @groceryListData(groceryList, Some(routes.GroceryListController.viewGroceryList(groceryList.name).url))
         </div>
       </div>
     }

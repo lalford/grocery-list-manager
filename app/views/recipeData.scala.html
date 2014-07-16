@@ -1,0 +1,50 @@
+@(recipe: Recipe, recipeUrl: Option[String] = None)(implicit navBarData: NavBarData, flash: Flash)
+
+@import helper._
+
+<div class="panel-body">
+@if(recipeUrl.isDefined) {
+  <h5><a href="@recipeUrl.get">View</a></h5>
+  <br>
+}
+@if(navBarData.activeGroceryListName.isDefined) {
+  <h5>Add Servings to @navBarData.activeGroceryListName.get</h5>
+  <br>
+  @form(action = routes.GroceryListController.addRecipeServings(navBarData.activeGroceryListName.get), 'class -> "add-servings-form") {
+    <input type="hidden" name="redirectUrl" value="@navBarData.lastUrl">
+    <input type="hidden" name="activeGroceryList" value="@navBarData.activeGroceryListName.get">
+    <input type="hidden" name="recipeServing.name" value="@recipe.name">
+    <input type="text" name="recipeServing.desiredServings" value="0.0">
+    <input type="submit" value="Add">
+  }
+  <br>
+}
+  <h5>Makes @recipe.servings Servings</h5>
+  <br>
+  <h5>Included Recipes</h5>
+  <br>
+  <table>
+  @for(includedRecipe <- recipe.recipeIngredients) {
+    <tr>
+      <td class="ingredients-td">@includedRecipe.name</td>
+      <td class="ingredients-td">@includedRecipe.desiredServings Servings</td>
+    </tr>
+  }
+  </table>
+  <br>
+  <h5>Standalone Ingredients</h5>
+  <br>
+  <table>
+  @for(ingredient <- recipe.foodIngredients) {
+    <tr>
+      <td class="ingredients-td">@ingredient.food</td>
+      <td class="ingredients-td">@ingredient.quantity</td>
+      <td class="ingredients-td">@ingredient.unit.getOrElse("")</td>
+    </tr>
+  }
+  </table>
+  <br>
+  <h5>Directions</h5>
+  <br>
+  <p>@recipe.directions.getOrElse("")</p>
+</div>

@@ -1,0 +1,28 @@
+@(groceryList: GroceryList, groceryListUrl: Option[String] = None)
+
+<div class="panel-body">
+@if(groceryListUrl.isDefined) {
+  <h5><a href="@groceryListUrl.get">View</a></h5>
+  <br>
+}
+  <h5>Recipes</h5>
+  <table>
+  @for(recipeServing <- groceryList.recipeServings) {
+    <tr>
+      <td class="ingredients-td">@recipeServing.name</td>
+      <td class="ingredients-td">@recipeServing.desiredServings Servings</td>
+    </tr>
+  }
+  </table>
+  <br>
+  <h5>Standalone Ingredients</h5>
+  <table>
+  @for(ingredient <- groceryList.miscellaneous) {
+    <tr>
+      <td class="ingredients-td">@ingredient.food</td>
+      <td class="ingredients-td">@ingredient.quantity</td>
+      <td class="ingredients-td">@ingredient.unit.getOrElse("")</td>
+    </tr>
+  }
+  </table>
+</div>

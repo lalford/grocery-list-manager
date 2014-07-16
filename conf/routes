@@ -3,35 +3,36 @@
 # ~~~~
 
 # Home page
-GET         /                                       controllers.Application.index
+GET         /                                            controllers.Application.index
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /assets/*file                           controllers.Assets.at(path="/public", file)
+GET         /assets/*file                                controllers.Assets.at(path="/public", file)
 
 # views
-GET         /recipes/view                           controllers.RecipeController.viewRecipes
+GET         /recipes/view                                controllers.RecipeController.viewRecipes
+GET         /recipes/:name/view                          controllers.RecipeController.viewRecipe(name: String)
 
-GET         /groceryLists/view                      controllers.GroceryListController.viewGroceryLists
-GET         /groceryLists/:name/view                controllers.GroceryListController.viewGroceryList(name: String)
-GET         /groceryLists/new                       controllers.GroceryListController.newGroceryList
+GET         /groceryLists/view                           controllers.GroceryListController.viewGroceryLists
+GET         /groceryLists/:name/view                     controllers.GroceryListController.viewGroceryList(name: String)
+GET         /groceryLists/new                            controllers.GroceryListController.newGroceryList
 
 # set the active grocery list cookie
-GET         /groceryLists/:name/makeActive          controllers.GroceryListController.makeActiveGroceryList(name: String, redirectUrl: String)
+GET         /groceryLists/:name/makeActive               controllers.GroceryListController.makeActiveGroceryList(name: String, redirectUrl: String)
 
 # json apis
-GET         /recipes                                controllers.RecipeController.findRecipes
-GET         /recipes/:name                          controllers.RecipeController.findRecipe(name: String)
-POST        /recipes                                controllers.RecipeController.createRecipe
-PUT         /recipes                                controllers.RecipeController.updateRecipe
+GET         /recipes                                     controllers.RecipeController.findRecipes
+GET         /recipes/:name                               controllers.RecipeController.findRecipe(name: String)
+POST        /recipes                                     controllers.RecipeController.createRecipe
+PUT         /recipes                                     controllers.RecipeController.updateRecipe
 
-GET         /migrate                                controllers.RecipeController.migrateData
+GET         /migrate                                     controllers.RecipeController.migrateData
 
-GET         /groceryLists                           controllers.GroceryListController.findGroceryLists
-GET         /groceryLists/:name                     controllers.GroceryListController.findGroceryList(name: String)
-POST        /groceryLists                           controllers.GroceryListController.createGroceryList
-PUT         /groceryLists                           controllers.GroceryListController.updateGroceryList
-GET         /groceryLists/:name/shoppingList        controllers.GroceryListController.generateShoppingList(name: String)
+GET         /groceryLists                                controllers.GroceryListController.findGroceryLists
+GET         /groceryLists/:name                          controllers.GroceryListController.findGroceryList(name: String)
+POST        /groceryLists                                controllers.GroceryListController.createGroceryList
+PUT         /groceryLists                                controllers.GroceryListController.updateGroceryList
+GET         /groceryLists/:name/shoppingList             controllers.GroceryListController.generateShoppingList(name: String)
 
 # form apis
-POST        /groceryLists/empty                     controllers.GroceryListController.createEmptyGroceryList
-POST        /groceryLists/:name/addRecipeServings   controllers.GroceryListController.addRecipeServings(name: String)
+POST        /groceryLists/empty                          controllers.GroceryListController.createEmptyGroceryList
+POST        /groceryLists/:name/addRecipeServings        controllers.GroceryListController.addRecipeServings(name: String)

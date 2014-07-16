@@ -1,6 +1,6 @@
 @(groceryList: GroceryList)(implicit navBarData: NavBarData, flash: Flash)
 
 @pageLayout {
-//  TODO - support adding miscellaneous ingredients, refactor find and update code from addRecipeServings
-  <p>@groceryList</p>
+  <h3>@groceryList.name</h3>
+  @groceryListData(groceryList)
 }

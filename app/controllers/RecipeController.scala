@@ -23,6 +23,13 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
     }
   }
 
+  def viewRecipe(name: String) = ActionWrapper.async { implicit requestWrapper =>
+    recipeService.findRecipe(name) map {
+      case None => NotFound
+      case Some(recipe) => Ok(views.html.recipe(recipe))
+    }
+  }
+
   def findRecipes = Action.async {
     recipeService.findRecipes map { allRecipes =>
       Ok(Json.toJson(allRecipes))
