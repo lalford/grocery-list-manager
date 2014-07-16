@@ -3,88 +3,64 @@ package controllers
 import play.api._
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import scala.concurrent.Future
+import services.RecipeService
+import scala.concurrent.{Promise, Future}
 import anorm._
 import play.api.db.DB
 import org.joda.time.DateTime
 import java.util.Date
 
-// Reactive Mongo imports
-import reactivemongo.api._
+import scala.util.{Failure, Success}
 
-// Reactive Mongo plugin, including the JSON-specialized collection
-import play.modules.reactivemongo.MongoController
-import play.modules.reactivemongo.json.collection.JSONCollection
-
-object RecipeController extends Controller with MongoController with TemplateData with RequestHelpers {
-  def collection: JSONCollection = db.collection[JSONCollection]("recipes")
-
+class RecipeController(recipeService: RecipeService) extends Controller with TemplateData with RequestHelpers {
   import models._
   import models.JsonFormats._
 
   def viewRecipes = ActionWrapper.async { implicit requestWrapper =>
-    fetchRecipes map { allRecipes =>
+    recipeService.findRecipes map { allRecipes =>
       Ok(views.html.recipes(allRecipes))
     }
   }
 
   def findRecipes = Action.async {
-    val futureAllRecipes = fetchRecipes
-    futureAllRecipes map { allRecipes => Ok(Json.toJson(allRecipes)) }
+    recipeService.findRecipes map { allRecipes =>
+      Ok(Json.toJson(allRecipes))
+    }
   }
 
   def findRecipe(name: String) = Action.async {
-    fetchRecipeByName(name) map {
+    recipeService.findRecipe(name) map {
       case None => NotFound
       case Some(recipe) => Ok(Json.toJson(recipe))
     }
   }
 
   def createRecipe = Action.async(parse.json) { request =>
-    request.body.validate[Recipe].map { recipe =>
-      fetchRecipeByName(recipe.name).flatMap {
-        case None => {
-          collection.insert(recipe).map { lastError =>
-            Logger.debug(s"Successfully inserted with LastError: $lastError")
-            Created
-          }
+    request.body.validate[Recipe].fold(
+      jsErrors => Future.successful(BadRequest("json is not valid as a recipe:"+ JsError.toFlatJson(jsErrors))),
+      recipe => {
+        val result = Promise[SimpleResult]()
+        recipeService.insertRecipe(recipe).onComplete {
+          case Success(_) => result.success(Created)
+          case Failure(e) if e.isInstanceOf[IllegalArgumentException] => result.success(BadRequest(e.getMessage))
+          case Failure(e) => result.success(InternalServerError)
         }
-        case Some(r) => Future.successful(BadRequest(s"a recipe already exists named [${r.name}]"))
+        result.future
       }
-    }.getOrElse(Future.successful(BadRequest("json is not valid as a recipe")))
+    )
   }
 
   def updateRecipe = Action.async(parse.json) { request =>
-    request.body.validate[Recipe].map { recipe =>
-      collection
-        .update(Json.obj("name" -> recipe.name), recipe)
-        .map { lastError =>
+    request.body.validate[Recipe].fold(
+      jsErrors => Future.successful(BadRequest("json is not valid as a recipe:"+ JsError.toFlatJson(jsErrors))),
+      recipe => {
+        recipeService.updateRecipe(recipe) map { lastError =>
           Logger.debug(s"Successfully updated with LastError: $lastError")
           Ok
         }
-    }.getOrElse(Future.successful(BadRequest("json is not valid as a recipe")))
-  }
-
-  private def fetchRecipes = {
-    val cursor = collection
-      .find(Json.obj())
-      .sort(Json.obj("name" -> 1))
-      .cursor[Recipe]
-    cursor.collect[List]()
-  }
-
-  def fetchRecipeByName(name: String) = {
-    val cursor = collection.
-      find(Json.obj("name" -> name)).
-      cursor[Recipe]
-    val futureRecipes = cursor.collect[List]()
-
-    futureRecipes flatMap { recipes =>
-      if (recipes.length > 1) Future.failed(new IllegalStateException(s"found ${recipes.length} recipes with name $name, there can be only one"))
-      else Future.successful(recipes.headOption)
-    }
+      }
+    )
   }
 
   // TODO - migration can be removed once everything is settled
@@ -145,17 +121,17 @@ object RecipeController extends Controller with MongoController with TemplateDat
     }
 
     extractedRecipes.foreach { recipe =>
-      fetchRecipeByName(recipe.name).flatMap {
-        case None => {
-          collection.insert(recipe).map { lastError =>
-            Logger.debug(s"Successfully inserted with LastError: $lastError")
-            Created
-          }
-        }
-        case Some(r) => Future.successful(BadRequest(s"a recipe already exists named [${r.name}]"))
+      val result = Promise[SimpleResult]()
+      recipeService.insertRecipe(recipe).onComplete {
+        case Success(_) => result.success(Created)
+        case Failure(e) if e.isInstanceOf[IllegalArgumentException] => result.success(BadRequest(e.getMessage))
+        case Failure(e) => result.success(InternalServerError)
       }
+      result.future
     }
 
     Future(Ok(extractedRecipes.mkString("\n\n")))
   }
 }
+
+object RecipeController extends RecipeController(new RecipeService)
