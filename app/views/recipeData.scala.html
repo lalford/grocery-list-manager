@@ -4,11 +4,13 @@
 
 <div class="panel-body">
 @if(recipeUrl.isDefined) {
-  <h5><a href="@recipeUrl.get">View</a></h5>
+  <h4><a href="@recipeUrl.get">View</a></h4>
   <br>
 }
 @if(navBarData.activeGroceryListName.isDefined) {
-  <h5>Add Servings to @navBarData.activeGroceryListName.get</h5>
+  <h5>Makes @recipe.servings Servings</h5>
+  <br>
+  <h4>Add Desired Servings to @navBarData.activeGroceryListName.get</h4>
   <br>
   @form(action = routes.GroceryListController.addRecipeServings(navBarData.activeGroceryListName.get), 'class -> "add-servings-form") {
     <input type="hidden" name="redirectUrl" value="@navBarData.lastUrl">
@@ -19,9 +21,7 @@
   }
   <br>
 }
-  <h5>Makes @recipe.servings Servings</h5>
-  <br>
-  <h5>Included Recipes</h5>
+  <h4>Included Recipes</h4>
   <br>
   <table>
   @for(includedRecipe <- recipe.recipeIngredients) {
@@ -32,7 +32,7 @@
   }
   </table>
   <br>
-  <h5>Standalone Ingredients</h5>
+  <h4>Standalone Ingredients</h4>
   <br>
   <table>
   @for(ingredient <- recipe.foodIngredients) {
@@ -44,7 +44,7 @@
   }
   </table>
   <br>
-  <h5>Directions</h5>
+  <h4>Directions</h4>
   <br>
-  <p>@recipe.directions.getOrElse("")</p>
+  <p class="directions">@recipe.directions.getOrElse("")</p>
 </div>

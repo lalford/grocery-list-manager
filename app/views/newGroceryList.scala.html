@@ -4,7 +4,7 @@
 @import helper.twitterBootstrap._
 
 @pageLayout {
-  @form(action = routes.GroceryListController.createEmptyGroceryList()) {
+  @form(action = routes.GroceryListController.createEmptyGroceryList(), 'class -> "add-grocery-list-form") {
     @inputText(emptyGroceryListForm("name"))
     <input type="submit" value="Create">
   }
