@@ -13,17 +13,17 @@ import java.util.Date
 
 import scala.util.{Failure, Success}
 
-class RecipeController(recipeService: RecipeService) extends Controller with TemplateData with RequestHelpers {
+class RecipeController(recipeService: RecipeService) extends Controller with TemplateHelpers with RequestHelpers {
   import models._
   import models.JsonFormats._
 
-  def viewRecipes = ActionWrapper.async { implicit requestWrapper =>
+  def viewRecipes = ActionHelper.async { implicit requestContext =>
     recipeService.findRecipes map { allRecipes =>
       Ok(views.html.recipes(allRecipes))
     }
   }
 
-  def viewRecipe(name: String) = ActionWrapper.async { implicit requestWrapper =>
+  def viewRecipe(name: String) = ActionHelper.async { implicit requestContext =>
     recipeService.findRecipe(name) map {
       case None => NotFound
       case Some(recipe) => Ok(views.html.recipe(recipe))

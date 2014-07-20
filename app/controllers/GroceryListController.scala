@@ -10,23 +10,26 @@ import scala.util.{Failure, Success}
 
 class GroceryListController(
   groceryListService: GroceryListService,
-  recipeService: RecipeService ) extends Controller with TemplateData with RequestHelpers {
+  recipeService: RecipeService ) extends Controller with TemplateHelpers with RequestHelpers {
 
   import models._
   import models.JsonFormats._
 
-  def viewGroceryLists = ActionWrapper.async { implicit requestWrapper =>
-    groceryListService.findGroceryLists map { allGroceryLists => Ok(views.html.groceryLists(allGroceryLists)) }
+  def viewGroceryLists = ActionHelper.async { implicit requestContext =>
+    groceryListService.findGroceryLists map { allGroceryLists =>
+      val sortedGroceryLists = allGroceryLists sortWith(_.name.toLowerCase < _.name.toLowerCase)
+      Ok(views.html.groceryLists(sortedGroceryLists))
+    }
   }
 
-  def viewGroceryList(name: String) = ActionWrapper.async { implicit requestWrapper =>
+  def viewGroceryList(name: String) = ActionHelper.async { implicit requestContext =>
     groceryListService.findGroceryList(name) map {
       case None => NotFound
       case Some(groceryList) => Ok(views.html.groceryList(groceryList))
     }
   }
 
-  def newGroceryList = ActionWrapper { implicit requestWrapper =>
+  def newGroceryList = ActionHelper { implicit requestContext =>
     Ok(views.html.newGroceryList(emptyGroceryListForm))
   }
 
@@ -164,7 +167,7 @@ class GroceryListController(
   }
 
   def makeActiveGroceryList(name: String, redirectUrl: String) = Action {
-    Redirect(redirectUrl).withSession(activeGroceryListKey -> name)
+    Redirect(redirectUrl).withSession(ActionConstants.activeGroceryListKey -> name)
   }
 
   private def findRecipesAndServings(groceryList: GroceryList): Future[List[(Recipe, Double)]] = {

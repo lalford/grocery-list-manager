@@ -1,4 +1,4 @@
-@(recipe: Recipe, recipeUrl: Option[String] = None)(implicit navBarData: NavBarData, flash: Flash)
+@(recipe: Recipe, recipeUrl: Option[String] = None)(implicit requestContextData: RequestContextData, flash: Flash)
 
 @import helper._
 
@@ -7,14 +7,14 @@
   <h4><a href="@recipeUrl.get">View</a></h4>
   <br>
 }
-@if(navBarData.activeGroceryListName.isDefined) {
+@if(requestContextData.activeGroceryList.isDefined) {
   <h5>Makes @recipe.servings Servings</h5>
   <br>
-  <h4>Add Desired Servings to @navBarData.activeGroceryListName.get</h4>
+  <h4>Add Desired Servings to @requestContextData.activeGroceryList.get.groceryList.name</h4>
   <br>
-  @form(action = routes.GroceryListController.addRecipeServings(navBarData.activeGroceryListName.get), 'class -> "add-servings-form") {
-    <input type="hidden" name="redirectUrl" value="@navBarData.lastUrl">
-    <input type="hidden" name="activeGroceryList" value="@navBarData.activeGroceryListName.get">
+  @form(action = routes.GroceryListController.addRecipeServings(requestContextData.activeGroceryList.get.groceryList.name), 'class -> "add-servings-form") {
+    <input type="hidden" name="redirectUrl" value="@requestContextData.navigationLinks.lastUrl">
+    <input type="hidden" name="activeGroceryList" value="@requestContextData.activeGroceryList.get.groceryList.name">
     <input type="hidden" name="recipeServing.name" value="@recipe.name">
     <input type="text" name="recipeServing.desiredServings" value="0.0">
     <input type="submit" value="Add">
