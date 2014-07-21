@@ -1,0 +1,21 @@
+@(groceryList: GroceryList, groceryListUrl: String)
+
+<div class="panel-body">
+  <b>Recipes</b>
+  <table>
+  @for(recipeServing <- groceryList.recipeServings) {
+    <tr>
+      <td class="ingredients-td">@recipeServing.name</td>
+    </tr>
+  }
+  </table>
+  <br>
+  <b>Standalone Ingredients</b>
+  <table>
+  @for(ingredient <- groceryList.miscellaneous) {
+    <tr>
+      <td class="ingredients-td">@ingredient.food</td>
+    </tr>
+  }
+  </table>
+</div>

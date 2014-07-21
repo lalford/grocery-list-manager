@@ -18,7 +18,7 @@
 
     <div id="content">
       <div id="sidebar">
-        <div id="sidebar-list">
+        <div class="sidebar-list">
           <b>Grocery Lists</b>
           <ul>
             <li><a href="@requestContextData.navigationLinks.viewGroceryListsUrl">View All</a></li>
@@ -30,6 +30,12 @@
             <li>Create - TODO</li>
           </ul>
           <b>Active Grocery List</b>
+          <br>
+          @if(requestContextData.activeGroceryList.isDefined) {
+            @defining(requestContextData.activeGroceryList.get) { activeGroceryList =>
+              <b><a href="@activeGroceryList.groceryListUrl">@activeGroceryList.groceryList.name</a></b>
+            }
+          }
           <ul>
             <li>
               <div class="dropdown">
@@ -48,7 +54,7 @@
             </li>
             @if(requestContextData.activeGroceryList.isDefined) {
               @defining(requestContextData.activeGroceryList.get) { activeGroceryList =>
-                <li>@groceryListData(activeGroceryList.groceryList, Some(activeGroceryList.groceryListUrl))</li>
+                <li>@groceryListSidebarData(activeGroceryList.groceryList, activeGroceryList.groceryListUrl)</li>
               }
             }
           </ul>
