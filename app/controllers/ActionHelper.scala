@@ -27,6 +27,7 @@ object ActionHelper extends ActionBuilder[RequestContext] {
         lastUrl = redirectUrl,
         newGroceryListUrl = routes.GroceryListController.newGroceryList.url,
         viewGroceryListsUrl = routes.GroceryListController.viewGroceryLists.url,
+        newRecipeUrl = routes.RecipeController.newRecipe.url,
         viewRecipesUrl = routes.RecipeController.viewRecipes.url
       )
 
@@ -46,10 +47,6 @@ object ActionConstants {
   val activeGroceryListKey = "activeGroceryList"
 }
 
-trait TemplateData {
-  implicit def requestContext
-}
-
 case class GroceryListActivator(name: String, activatorUrl: String)
 
 case class ActiveGroceryList(groceryList: GroceryList, groceryListUrl: String)
@@ -57,6 +54,7 @@ case class ActiveGroceryList(groceryList: GroceryList, groceryListUrl: String)
 case class NavigationLinks(lastUrl: String,
                            newGroceryListUrl: String,
                            viewGroceryListsUrl: String,
+                           newRecipeUrl: String,
                            viewRecipesUrl: String)
 
 case class RequestContext[A](request: Request[A],

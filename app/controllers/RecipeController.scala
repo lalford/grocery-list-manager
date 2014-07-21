@@ -43,6 +43,29 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
     }
   }
 
+  def newRecipe = ActionHelper { implicit requestContext =>
+    Ok(views.html.newRecipe(recipeForm))
+  }
+
+  def createFormRecipe = Action.async { implicit request =>
+    recipeForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(BadRequest("recipe name cannot be empty")),
+      recipe => Future.successful(NotImplemented)
+//      {
+//        val result = Promise[SimpleResult]()
+//        groceryListService.insertGroceryList(GroceryList(emptyGroceryListName)).onComplete {
+//          case Success(groceryList) =>
+//            result.success(Redirect(routes.GroceryListController.viewGroceryList(groceryList.name)).flashing("result" -> s"Grocery List Created - $emptyGroceryListName"))
+//          case Failure(e) if e.isInstanceOf[IllegalArgumentException] =>
+//            result.success(Redirect(routes.GroceryListController.newGroceryList).flashing("result" -> s"Failed - ${e.getMessage}"))
+//          case Failure(e) =>
+//            result.success(InternalServerError)
+//        }
+//        result.future
+//      }
+    )
+  }
+
   def createRecipe = Action.async(parse.json) { request =>
     request.body.validate[Recipe].fold(
       jsErrors => Future.successful(BadRequest("json is not valid as a recipe:"+ JsError.toFlatJson(jsErrors))),

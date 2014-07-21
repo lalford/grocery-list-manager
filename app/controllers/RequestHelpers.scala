@@ -9,19 +9,53 @@ trait RequestHelpers {
     single("name" -> nonEmptyText)
   )
 
+  val recipeServingMapping = mapping(
+    "name" -> nonEmptyText,
+    "desiredServings" -> bigDecimal
+  )(recipeServingApply)(recipeServingUnapply)
+
+  def recipeServingApply(name: RecipeName, desiredServings: BigDecimal) = RecipeServing(name, desiredServings.toDouble)
+  def recipeServingUnapply(recipeServing: RecipeServing) = Some( (recipeServing.name, BigDecimal(recipeServing.desiredServings)) )
+
   val addRecipeServingForm = Form(
     mapping(
       "redirectUrl" -> nonEmptyText,
       "activeGroceryList" -> nonEmptyText,
-      "recipeServing" -> mapping(
-        "name" -> nonEmptyText,
-        "desiredServings" -> bigDecimal
-      )(recipeServingApply)(recipeServingUnapply)
+      "recipeServing" -> recipeServingMapping
     )(AddRecipeServing.apply)(AddRecipeServing.unapply)
   )
 
-  def recipeServingApply(name: RecipeName, desiredServings: BigDecimal) = RecipeServing(name, desiredServings.toDouble)
-  def recipeServingUnapply(recipeServing: RecipeServing) = Some( (recipeServing.name, BigDecimal(recipeServing.desiredServings)) )
+  val foodIngredientMapping = mapping(
+    "food" -> nonEmptyText,
+    "quantity" -> bigDecimal,
+    "unit" -> optional(nonEmptyText),
+    "storeSection" -> optional(nonEmptyText)
+  )(foodIngredientApply)(foodIngredientUnapply)
+
+  def foodIngredientApply(food: Food, quantity: BigDecimal, unit: Option[String], storeSection: Option[StoreSection]) = FoodIngredient(food, quantity.toDouble, unit, storeSection)
+  def foodIngredientUnapply(fi: FoodIngredient) = Some( (fi.food, BigDecimal(fi.quantity), fi.unit, fi.storeSection) )
+
+  val recipeForm = Form(
+    mapping(
+      "name" -> nonEmptyText,
+      "servings" -> bigDecimal,
+      "foodIngredients" -> list(foodIngredientMapping),
+      "recipeIngredients" -> list(recipeServingMapping),
+      "directions" -> optional(nonEmptyText(maxLength = 1000)),
+      "tags" -> list(nonEmptyText)
+    )(recipeApply)(recipeUnapply)
+  )
+
+  def recipeApply(name: RecipeName,
+                  servings: BigDecimal,
+                  foodIngredients: List[FoodIngredient] = List(),
+                  recipeIngredients: List[RecipeServing] = List(),
+                  directions: Option[String] = None,
+                  tags: List[String] = List()) = {
+    Recipe(name, servings.toDouble, foodIngredients, recipeIngredients, directions, tags)
+  }
+
+  def recipeUnapply(r: Recipe) = Some((r.name, BigDecimal(r.servings), r.foodIngredients, r.recipeIngredients, r.directions, r.tags))
 }
 
 case class AddRecipeServing(redirectUrl: String, activeGroceryList: String, recipeServing: RecipeServing)
