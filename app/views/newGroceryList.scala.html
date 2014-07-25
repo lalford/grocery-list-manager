@@ -1,11 +1,10 @@
 @(emptyGroceryListForm: Form[String])(implicit requestContextData: RequestContextData, flash: Flash)
 
 @import helper.{form, inputText}
-@import helper.twitterBootstrap._
 
 @pageLayout {
   @form(action = routes.GroceryListController.createEmptyGroceryList(), 'class -> "add-grocery-list-form") {
-    @inputText(emptyGroceryListForm("name"))
+    @inputText(emptyGroceryListForm("name"), '_label -> "Grocery List Name")
     <input type="submit" value="Create">
   }
 }

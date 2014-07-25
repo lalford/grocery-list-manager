@@ -56,6 +56,10 @@ trait RequestHelpers {
   }
 
   def recipeUnapply(r: Recipe) = Some((r.name, BigDecimal(r.servings), r.foodIngredients, r.recipeIngredients, r.directions, r.tags))
+
+  def formErrorsFlashing[T](formWithErrors: Form[T]) = {
+    formWithErrors.errors.map(e => s"${e.key} - ${e.message}").mkString("\n")
+  }
 }
 
 case class AddRecipeServing(redirectUrl: String, activeGroceryList: String, recipeServing: RecipeServing)

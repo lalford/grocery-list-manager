@@ -1,11 +1,10 @@
 @(recipeForm: Form[Recipe])(implicit requestContextData: RequestContextData, flash: Flash)
 
 @import helper.{form, inputText}
-@import helper.twitterBootstrap._
 
 @pageLayout {
   @form(action = routes.RecipeController.createFormRecipe(), 'class -> "create-recipe-form") {
-    @inputText(recipeForm("name"))
+    @inputText(recipeForm("name"), '_label -> "Recipe Name")
     <input type="submit" value="Create">
   }
 }

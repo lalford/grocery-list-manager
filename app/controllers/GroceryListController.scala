@@ -46,14 +46,14 @@ class GroceryListController(
 
   def createEmptyGroceryList = Action.async { implicit request =>
     emptyGroceryListForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest("grocery list name cannot be empty")),
+      formWithErrors => Future.successful(Redirect(routes.GroceryListController.newGroceryList).flashing("error" -> formErrorsFlashing(formWithErrors))),
       emptyGroceryListName => {
         val result = Promise[SimpleResult]()
         groceryListService.insertGroceryList(GroceryList(emptyGroceryListName)).onComplete {
           case Success(groceryList) =>
-            result.success(Redirect(routes.GroceryListController.viewGroceryList(groceryList.name)).flashing("result" -> s"Grocery List Created - $emptyGroceryListName"))
+            result.success(Redirect(routes.GroceryListController.viewGroceryList(groceryList.name)).flashing("success" -> s"Grocery List Created - $emptyGroceryListName"))
           case Failure(e) if e.isInstanceOf[IllegalArgumentException] =>
-            result.success(Redirect(routes.GroceryListController.newGroceryList).flashing("result" -> s"Failed - ${e.getMessage}"))
+            result.success(Redirect(routes.GroceryListController.newGroceryList).flashing("error" -> s"Failed - ${e.getMessage}"))
           case Failure(e) =>
             result.success(InternalServerError)
         }

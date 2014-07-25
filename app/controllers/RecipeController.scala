@@ -49,7 +49,7 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
 
   def createFormRecipe = Action.async { implicit request =>
     recipeForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(BadRequest("recipe name cannot be empty")),
+      formWithErrors => Future.successful(Redirect(routes.RecipeController.newRecipe).flashing("error" -> formErrorsFlashing(formWithErrors))),
       recipe => Future.successful(NotImplemented)
 //      {
 //        val result = Promise[SimpleResult]()

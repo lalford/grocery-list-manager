@@ -69,10 +69,14 @@
           </div>
         }
         @flash.get("error").map { err =>
-          <div id="error-flashing">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            @err
-          </div>
+          @defining(err.split("\n")) { errs =>
+            @for(e <- errs) {
+              <div id="error-flashing">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                @e
+              </div>
+            }
+          }
         }
         @content
       </div>
