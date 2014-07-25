@@ -50,19 +50,18 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
   def createFormRecipe = Action.async { implicit request =>
     recipeForm.bindFromRequest.fold(
       formWithErrors => Future.successful(Redirect(routes.RecipeController.newRecipe).flashing("error" -> formErrorsFlashing(formWithErrors))),
-      recipe => Future.successful(NotImplemented)
-//      {
-//        val result = Promise[SimpleResult]()
-//        groceryListService.insertGroceryList(GroceryList(emptyGroceryListName)).onComplete {
-//          case Success(groceryList) =>
-//            result.success(Redirect(routes.GroceryListController.viewGroceryList(groceryList.name)).flashing("result" -> s"Grocery List Created - $emptyGroceryListName"))
-//          case Failure(e) if e.isInstanceOf[IllegalArgumentException] =>
-//            result.success(Redirect(routes.GroceryListController.newGroceryList).flashing("result" -> s"Failed - ${e.getMessage}"))
-//          case Failure(e) =>
-//            result.success(InternalServerError)
-//        }
-//        result.future
-//      }
+      boundRecipe => {
+        val result = Promise[SimpleResult]()
+        recipeService.insertRecipe(boundRecipe).onComplete {
+          case Success(recipe) =>
+            result.success(Redirect(routes.RecipeController.viewRecipe(recipe.name)).flashing("success" -> s"Recipe Created - ${recipe.name}"))
+          case Failure(e) if e.isInstanceOf[IllegalArgumentException] =>
+            result.success(Redirect(routes.RecipeController.newRecipe).flashing("error" -> s"Failed - ${e.getMessage}"))
+          case Failure(e) =>
+            result.success(InternalServerError)
+        }
+        result.future
+      }
     )
   }
 

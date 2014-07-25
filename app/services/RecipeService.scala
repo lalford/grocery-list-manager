@@ -36,7 +36,7 @@ class RecipeService extends MongoDataSource {
   def insertRecipe(recipe: Recipe) = {
     findRecipe(recipe.name) flatMap {
       case None => {
-        recipes.insert(recipe).map { lastError =>
+        recipes.insert(recipe).flatMap { lastError =>
           Logger.debug(s"inserted with LastError: $lastError")
           if (lastError.ok)
             Future.successful(recipe)

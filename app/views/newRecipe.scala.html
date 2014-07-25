@@ -5,6 +5,7 @@
 @pageLayout {
   @form(action = routes.RecipeController.createFormRecipe(), 'class -> "create-recipe-form") {
     @inputText(recipeForm("name"), '_label -> "Recipe Name")
+    @inputText(recipeForm("servings"), '_label -> "Servings")
     <input type="submit" value="Create">
   }
 }
