@@ -1,9 +1,10 @@
 @(recipeForm: Form[Recipe])(implicit requestContextData: RequestContextData, flash: Flash)
 
-@import helper.{form, inputText}
+@import helper.{form, inputText, textarea}
 
 <p id="next-recipe-ingredient-index" class="next-index-field">@recipeForm("recipeIngredients").indexes.length</p>
 <p id="next-food-ingredient-index" class="next-index-field">@recipeForm("foodIngredients").indexes.length</p>
+<p id="next-tag-index" class="next-index-field">@recipeForm("tags").indexes.length</p>
 
 @pageLayout {
   @form(action = routes.RecipeController.createFormRecipe(), 'class -> "create-recipe-form") {
@@ -43,6 +44,20 @@
     }
     </table>
     <a id="add-food-ingredient-link">Add a food</a>
+    <br>
+    @textarea(recipeForm("directions"), '_label -> "Directions (max 1000 characters)")
+    <b>Tags</b>
+    <table id="tag-table" class="ingredient-table">
+      <tr>
+        <th>Tag Name</th>
+      </tr>
+    @for(i <- recipeForm("tags").indexes) {
+      <tr>
+        <td class="ingredient-table"><input type="text" name="tags[@i]" value="@recipeForm("tags")(s"[$i]").value.getOrElse("")"></td>
+      </tr>
+    }
+    </table>
+    <a id="add-tag-link">Add a tag</a>
     <br>
     <input type="submit" value="Create Recipe">
   }

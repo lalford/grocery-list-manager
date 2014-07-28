@@ -27,4 +27,15 @@ $(document).ready(function(){
     $('#food-ingredient-table tr:last').after(newRow);
   });
 
+  $("#add-tag-link").click(function () {
+    var newIndex = parseInt($("#next-tag-index").text());
+    var nextIndex = newIndex + 1;
+    $('#next-tag-index').text(nextIndex);
+
+    var tagInput = '<input type="text" name="tags[' + newIndex + ']" value="">';
+
+    var newRow = '<tr><td class="ingredient-table">' + tagInput + '</td></tr>';
+    $('#tag-table tr:last').after(newRow);
+  });
+
 });
