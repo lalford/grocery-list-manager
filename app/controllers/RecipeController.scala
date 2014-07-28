@@ -80,6 +80,30 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
     )
   }
 
+  def editRecipe(name: String) = ActionHelper.async { implicit requestContext =>
+    recipeService.findRecipe(name) map { recipe =>
+      recipe.map(r => Ok(views.html.newRecipe(recipeForm.fill(r)))).getOrElse(NotFound)
+    }
+  }
+
+  def updateFormRecipe = Action.async { implicit request =>
+    recipeForm.bindFromRequest.fold(
+      formWithErrors => Future.successful(Redirect(routes.RecipeController.newRecipe).flashing("error" -> formErrorsFlashing(formWithErrors))),
+      boundRecipe => {
+        val result = Promise[SimpleResult]()
+        recipeService.updateRecipe(boundRecipe).onComplete {
+          case Success(recipe) =>
+            result.success(Redirect(routes.RecipeController.viewRecipe(recipe.name)).flashing("success" -> s"Recipe Updated - ${recipe.name}"))
+          case Failure(e) if e.isInstanceOf[IllegalArgumentException] =>
+            result.success(Redirect(routes.RecipeController.editRecipe(boundRecipe.name)).flashing("error" -> s"Failed - ${e.getMessage}"))
+          case Failure(e) =>
+            result.success(InternalServerError)
+        }
+        result.future
+      }
+    )
+  }
+
   def updateRecipe = Action.async(parse.json) { request =>
     request.body.validate[Recipe].fold(
       jsErrors => Future.successful(BadRequest("json is not valid as a recipe:"+ JsError.toFlatJson(jsErrors))),

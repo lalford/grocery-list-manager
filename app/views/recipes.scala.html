@@ -13,7 +13,7 @@
           </h4>
         </div>
         <div id="collapse@i" class="panel-collapse collapse">
-          @recipeData(recipe, Some(routes.RecipeController.viewRecipe(recipe.name).url))
+          @recipeData(recipe, Some(routes.RecipeController.viewRecipe(recipe.name).url, routes.RecipeController.editRecipe(recipe.name).url))
         </div>
       </div>
     }

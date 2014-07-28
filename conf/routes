@@ -11,6 +11,7 @@ GET         /assets/*file                                controllers.Assets.at(p
 # views
 GET         /recipes/view                                controllers.RecipeController.viewRecipes
 GET         /recipes/:name/view                          controllers.RecipeController.viewRecipe(name: String)
+GET         /recipes/:name/edit                          controllers.RecipeController.editRecipe(name: String)
 GET         /recipes/new                                 controllers.RecipeController.newRecipe
 
 GET         /groceryLists/view                           controllers.GroceryListController.viewGroceryLists
@@ -36,6 +37,7 @@ GET         /groceryLists/:name/shoppingList             controllers.GroceryList
 
 # form apis
 POST        /recipes/formCreate                          controllers.RecipeController.createFormRecipe
+POST        /recipes/formUpdate                          controllers.RecipeController.updateFormRecipe
 
 POST        /groceryLists/empty                          controllers.GroceryListController.createEmptyGroceryList
 POST        /groceryLists/:name/addRecipeServings        controllers.GroceryListController.addRecipeServings(name: String)
