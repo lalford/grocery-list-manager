@@ -1,0 +1,54 @@
+@(recipeForm: Form[Recipe])(implicit requestContextData: RequestContextData, flash: Flash)
+
+@import helper.{inputText, textarea}
+
+@inputText(recipeForm("servings"), '_label -> "Servings")
+<br>
+<b>Recipe Ingredients</b>
+<table id="recipe-ingredient-table" class="ingredient-table">
+  <tr>
+    <th class="ingredient-table">Recipe Name</th>
+    <th class="ingredient-table">Servings</th>
+  </tr>
+  @for(i <- recipeForm("recipeIngredients").indexes) {
+    <tr>
+      <td class="ingredient-table"><input type="text" name="recipeIngredients[@i].name" value="@recipeForm("recipeIngredients")(s"[$i]")("name").value.getOrElse("")"></td>
+      <td class="ingredient-table"><input type="text" name="recipeIngredients[@i].desiredServings" value="@recipeForm("recipeIngredients")(s"[$i]")("desiredServings").value.getOrElse("")"></td>
+    </tr>
+  }
+</table>
+<a id="add-recipe-ingredient-link">Embed a recipe</a>
+<br>
+<b>Food Ingredients</b>
+<table id="food-ingredient-table" class="ingredient-table">
+  <tr>
+    <th class="ingredient-table">Food Name</th>
+    <th class="ingredient-table">Quantity</th>
+    <th class="ingredient-table">Unit</th>
+    <th class="ingredient-table">Store Section</th>
+  </tr>
+  @for(i <- recipeForm("foodIngredients").indexes) {
+    <tr>
+      <td class="ingredient-table"><input type="text" name="foodIngredients[@i].food" value="@recipeForm("foodIngredients")(s"[$i]")("food").value.getOrElse("")"></td>
+      <td class="ingredient-table"><input type="text" name="foodIngredients[@i].quantity" value="@recipeForm("foodIngredients")(s"[$i]")("quantity").value.getOrElse("")"></td>
+      <td class="ingredient-table"><input type="text" name="foodIngredients[@i].unit" value="@recipeForm("foodIngredients")(s"[$i]")("unit").value.getOrElse("")"></td>
+      <td class="ingredient-table"><input type="text" name="foodIngredients[@i].storeSection" value="@recipeForm("foodIngredients")(s"[$i]")("storeSection").value.getOrElse("")"></td>
+    </tr>
+  }
+</table>
+<a id="add-food-ingredient-link">Add a food</a>
+<br>
+@textarea(recipeForm("directions"), '_label -> "Directions (max 1000 characters)")
+<b>Tags</b>
+<table id="tag-table" class="ingredient-table">
+  <tr>
+    <th>Tag Name</th>
+  </tr>
+  @for(i <- recipeForm("tags").indexes) {
+    <tr>
+      <td class="ingredient-table"><input type="text" name="tags[@i]" value="@recipeForm("tags")(s"[$i]").value.getOrElse("")"></td>
+    </tr>
+  }
+</table>
+<a id="add-tag-link">Add a tag</a>
+<br>

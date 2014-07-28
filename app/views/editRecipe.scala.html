@@ -7,9 +7,11 @@
 <p id="next-tag-index" class="next-index-field">@recipeForm("tags").indexes.length</p>
 
 @pageLayout {
-  @form(action = routes.RecipeController.createFormRecipe(), 'class -> "create-recipe-form") {
+  @form(action = routes.RecipeController.updateFormRecipe(), 'class -> "create-recipe-form") {
+    <p>@recipeForm("name").value.getOrElse("")</p>
+    <input type="text" name="name" value="@recipeForm("name")" hidden="true">
     @inputText(recipeForm("name"), '_label -> "Recipe Name")
     @recipeDataInputs(recipeForm)
-    <input type="submit" value="Create Recipe">
+    <input type="submit" value="Update Recipe">
   }
 }

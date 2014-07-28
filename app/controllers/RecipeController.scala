@@ -82,7 +82,7 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
 
   def editRecipe(name: String) = ActionHelper.async { implicit requestContext =>
     recipeService.findRecipe(name) map { recipe =>
-      recipe.map(r => Ok(views.html.newRecipe(recipeForm.fill(r)))).getOrElse(NotFound)
+      recipe.map(r => Ok(views.html.editRecipe(recipeForm.fill(r)))).getOrElse(NotFound)
     }
   }
 
