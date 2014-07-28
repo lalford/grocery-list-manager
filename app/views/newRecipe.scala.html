@@ -2,10 +2,48 @@
 
 @import helper.{form, inputText}
 
+<p id="next-recipe-ingredient-index" class="next-index-field">@recipeForm("recipeIngredients").indexes.length</p>
+<p id="next-food-ingredient-index" class="next-index-field">@recipeForm("foodIngredients").indexes.length</p>
+
 @pageLayout {
   @form(action = routes.RecipeController.createFormRecipe(), 'class -> "create-recipe-form") {
     @inputText(recipeForm("name"), '_label -> "Recipe Name")
     @inputText(recipeForm("servings"), '_label -> "Servings")
-    <input type="submit" value="Create">
+    <br>
+    <b>Recipe Ingredients</b>
+    <table id="recipe-ingredient-table" class="ingredient-table">
+      <tr>
+        <th class="ingredient-table">Recipe Name</th>
+        <th class="ingredient-table">Servings</th>
+      </tr>
+    @for(i <- recipeForm("recipeIngredients").indexes) {
+      <tr>
+        <td class="ingredient-table"><input type="text" name="recipeIngredients[@i].name" value="@recipeForm("name").value.getOrElse("")"></td>
+        <td class="ingredient-table"><input type="text" name="recipeIngredients[@i].desiredServings" value="@recipeForm("desiredServings").value.getOrElse("")"></td>
+      </tr>
+    }
+    </table>
+    <a id="add-recipe-ingredient-link">Embed a recipe</a>
+    <br>
+    <b>Food Ingredients</b>
+    <table id="food-ingredient-table" class="ingredient-table">
+      <tr>
+        <th class="ingredient-table">Food Name</th>
+        <th class="ingredient-table">Quantity</th>
+        <th class="ingredient-table">Unit</th>
+        <th class="ingredient-table">Store Section</th>
+      </tr>
+    @for(i <- recipeForm("foodIngredients").indexes) {
+      <tr>
+        <td class="ingredient-table"><input type="text" name="foodIngredients[@i].food" value="@recipeForm("food").value.getOrElse("")"></td>
+        <td class="ingredient-table"><input type="text" name="foodIngredients[@i].quantity" value="@recipeForm("quantity").value.getOrElse("")"></td>
+        <td class="ingredient-table"><input type="text" name="foodIngredients[@i].unit" value="@recipeForm("unit").value.getOrElse("")"></td>
+        <td class="ingredient-table"><input type="text" name="foodIngredients[@i].storeSection" value="@recipeForm("storeSection").value.getOrElse("")"></td>
+      </tr>
+    }
+    </table>
+    <a id="add-food-ingredient-link">Add a food</a>
+    <br>
+    <input type="submit" value="Create Recipe">
   }
 }
