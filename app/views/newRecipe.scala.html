@@ -2,10 +2,6 @@
 
 @import helper.{form, inputText}
 
-<p id="next-recipe-ingredient-index" class="next-index-field">@recipeForm("recipeIngredients").indexes.length</p>
-<p id="next-food-ingredient-index" class="next-index-field">@recipeForm("foodIngredients").indexes.length</p>
-<p id="next-tag-index" class="next-index-field">@recipeForm("tags").indexes.length</p>
-
 @pageLayout {
   @form(action = routes.RecipeController.createFormRecipe(), 'class -> "create-recipe-form") {
     @inputText(recipeForm("name"), '_label -> "Recipe Name")

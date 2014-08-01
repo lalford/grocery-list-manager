@@ -13,9 +13,11 @@
     <tr>
       <td class="ingredient-table"><input type="text" name="recipeIngredients[@i].name" value="@recipeForm("recipeIngredients")(s"[$i]")("name").value.getOrElse("")"></td>
       <td class="ingredient-table"><input type="text" name="recipeIngredients[@i].desiredServings" value="@recipeForm("recipeIngredients")(s"[$i]")("desiredServings").value.getOrElse("")"></td>
+      <td class="ingredient-table"><a class="delete">Remove</a></td>
     </tr>
   }
 </table>
+<p id="next-recipe-ingredient-index" class="next-index-field">@recipeForm("recipeIngredients").indexes.length</p>
 <a id="add-recipe-ingredient-link">Embed a recipe</a>
 <br>
 <br>
@@ -32,9 +34,11 @@
       <td class="ingredient-table"><input type="text" name="foodIngredients[@i].quantity" value="@recipeForm("foodIngredients")(s"[$i]")("quantity").value.getOrElse("")"></td>
       <td class="ingredient-table"><input type="text" name="foodIngredients[@i].unit" value="@recipeForm("foodIngredients")(s"[$i]")("unit").value.getOrElse("")"></td>
       <td class="ingredient-table"><input type="text" name="foodIngredients[@i].storeSection" value="@recipeForm("foodIngredients")(s"[$i]")("storeSection").value.getOrElse("")"></td>
+      <td class="ingredient-table"><a class="delete">Remove</a></td>
     </tr>
   }
 </table>
+<p id="next-food-ingredient-index" class="next-index-field">@recipeForm("foodIngredients").indexes.length</p>
 <a id="add-food-ingredient-link">Add a food</a>
 <br>
 <br>
@@ -47,9 +51,11 @@
   @for(i <- recipeForm("tags").indexes) {
     <tr>
       <td class="ingredient-table"><input type="text" name="tags[@i]" value="@recipeForm("tags")(s"[$i]").value.getOrElse("")"></td>
+      <td class="ingredient-table"><a class="delete">Remove</a></td>
     </tr>
   }
 </table>
+<p id="next-tag-index" class="next-index-field">@recipeForm("tags").indexes.length</p>
 <a id="add-tag-link">Add a tag</a>
 <br>
 <br>
