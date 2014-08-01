@@ -4,7 +4,6 @@
 
 @inputText(recipeForm("servings"), '_label -> "Servings")
 <br>
-<b>Recipe Ingredients</b>
 <table id="recipe-ingredient-table" class="ingredient-table">
   <tr>
     <th class="ingredient-table">Recipe Name</th>
@@ -19,7 +18,7 @@
 </table>
 <a id="add-recipe-ingredient-link">Embed a recipe</a>
 <br>
-<b>Food Ingredients</b>
+<br>
 <table id="food-ingredient-table" class="ingredient-table">
   <tr>
     <th class="ingredient-table">Food Name</th>
@@ -38,6 +37,7 @@
 </table>
 <a id="add-food-ingredient-link">Add a food</a>
 <br>
+<br>
 @textarea(recipeForm("directions"), '_label -> "Directions (max 1000 characters)")
 <b>Tags</b>
 <table id="tag-table" class="ingredient-table">
@@ -51,4 +51,5 @@
   }
 </table>
 <a id="add-tag-link">Add a tag</a>
+<br>
 <br>

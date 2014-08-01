@@ -1,6 +1,6 @@
 @(recipeForm: Form[Recipe])(implicit requestContextData: RequestContextData, flash: Flash)
 
-@import helper.{form, inputText}
+@import helper.form
 
 <p id="next-recipe-ingredient-index" class="next-index-field">@recipeForm("recipeIngredients").indexes.length</p>
 <p id="next-food-ingredient-index" class="next-index-field">@recipeForm("foodIngredients").indexes.length</p>
@@ -8,9 +8,8 @@
 
 @pageLayout {
   @form(action = routes.RecipeController.updateFormRecipe(), 'class -> "create-recipe-form") {
-    <p>@recipeForm("name").value.getOrElse("")</p>
-    <input type="text" name="name" value="@recipeForm("name")" hidden="true">
-    @inputText(recipeForm("name"), '_label -> "Recipe Name")
+    <b><p>@recipeForm("name").value.getOrElse("")</p></b>
+    <input type="text" name="name" value="@recipeForm("name").value.getOrElse("")" hidden="true">
     @recipeDataInputs(recipeForm)
     <input type="submit" value="Update Recipe">
   }
