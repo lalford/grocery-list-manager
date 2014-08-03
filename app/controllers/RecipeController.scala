@@ -87,8 +87,12 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
   }
 
   def updateFormRecipe = Action.async { implicit request =>
+    val redirectUrl = request.getQueryString("redirectUrl")
     recipeForm.bindFromRequest.fold(
-      formWithErrors => Future.successful(Redirect(routes.RecipeController.newRecipe).flashing("error" -> formErrorsFlashing(formWithErrors))),
+      formWithErrors => {
+        val result = redirectUrl.map(Redirect(_)).getOrElse(BadRequest(s"recipe form invalid. ${formWithErrors.errors.map(_.message).mkString}"))
+        Future.successful(result.flashing("error" -> formErrorsFlashing(formWithErrors)))
+      },
       boundRecipe => {
         val result = Promise[SimpleResult]()
         recipeService.updateRecipe(boundRecipe).onComplete {

@@ -2,5 +2,5 @@
 
 @pageLayout {
   <h3>@recipe.name</h3>
-  @recipeData(recipe)
+  @recipeData(recipe, editUrl = Some(routes.RecipeController.editRecipe(recipe.name).url))
 }

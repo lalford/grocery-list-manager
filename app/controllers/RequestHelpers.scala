@@ -11,7 +11,7 @@ trait RequestHelpers {
 
   val recipeServingMapping = mapping(
     "name" -> nonEmptyText,
-    "desiredServings" -> bigDecimal
+    "desiredServings" -> bigDecimal.verifying(_ > 0)
   )(recipeServingApply)(recipeServingUnapply)
 
   def recipeServingApply(name: RecipeName, desiredServings: BigDecimal) = RecipeServing(name, desiredServings.toDouble)
@@ -27,7 +27,7 @@ trait RequestHelpers {
 
   val foodIngredientMapping = mapping(
     "food" -> nonEmptyText,
-    "quantity" -> bigDecimal,
+    "quantity" -> bigDecimal.verifying(_ > 0),
     "unit" -> optional(nonEmptyText),
     "storeSection" -> optional(nonEmptyText)
   )(foodIngredientApply)(foodIngredientUnapply)
@@ -38,10 +38,10 @@ trait RequestHelpers {
   val recipeForm = Form(
     mapping(
       "name" -> nonEmptyText,
-      "servings" -> bigDecimal,
+      "servings" -> bigDecimal.verifying(_ > 0),
       "foodIngredients" -> list(foodIngredientMapping),
       "recipeIngredients" -> list(recipeServingMapping),
-      "directions" -> optional(nonEmptyText(maxLength = 1000)),
+      "directions" -> optional(text(maxLength = 10000)),
       "tags" -> list(nonEmptyText)
     )(recipeApply)(recipeUnapply)
   )

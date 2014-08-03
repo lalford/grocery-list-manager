@@ -1,11 +1,14 @@
-@(recipe: Recipe, recipeViewEditUrls: Option[(String, String)] = None)(implicit requestContextData: RequestContextData, flash: Flash)
+@(recipe: Recipe, viewUrl: Option[String] = None, editUrl: Option[String] = None)(implicit requestContextData: RequestContextData, flash: Flash)
 
 @import helper._
 
 <div class="panel-body">
-@if(recipeViewEditUrls.isDefined) {
-  <h4><a href="@recipeViewEditUrls.get._1">View</a></h4>
-  <h4><a href="@recipeViewEditUrls.get._2">Edit</a></h4>
+@if(viewUrl.isDefined) {
+  <h4><a href="@viewUrl.get">View</a></h4>
+  <br>
+}
+@if(editUrl.isDefined) {
+  <h4><a href="@editUrl.get">Edit</a></h4>
   <br>
 }
 @if(requestContextData.activeGroceryList.isDefined) {
