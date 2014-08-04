@@ -10,9 +10,23 @@ $(document).ready(function(){
     });
   });
 
-  $("table td input.food-ingredient").each(function(i) {
+  $("table td input.food-ingredient-name").each(function(i) {
     $(this).autocomplete({
       source: "/foods/autocomplete",
+      minLength: 2
+    });
+  });
+
+  $("table td input.food-ingredient-unit").each(function(i) {
+    $(this).autocomplete({
+      source: "/units/autocomplete",
+      minLength: 2
+    });
+  });
+
+  $("table td input.food-ingredient-store-section").each(function(i) {
+    $(this).autocomplete({
+      source: "/storeSections/autocomplete",
       minLength: 2
     });
   });
@@ -26,6 +40,11 @@ $(document).ready(function(){
       type: 'text',
       name: 'recipeIngredients[' + newIndex + '].name',
       value: ''
+    });
+
+    nameInput.autocomplete({
+      source: "/recipes/autocomplete",
+      minLength: 2
     });
 
     var servingsInput = $('<input>', {
@@ -59,6 +78,11 @@ $(document).ready(function(){
       value: ''
     });
 
+    foodInput.autocomplete({
+      source: "/foods/autocomplete",
+      minLength: 2
+    });
+
     var quantityInput = $('<input>', {
       type: 'text',
       name: 'foodIngredients[' + newIndex + '].quantity',
@@ -71,10 +95,20 @@ $(document).ready(function(){
       value: ''
     });
 
+    unitInput.autocomplete({
+      source: "/units/autocomplete",
+      minLength: 2
+    });
+
     var storeSectionInput = $('<input>', {
       type: 'text',
       name: 'foodIngredients[' + newIndex + '].storeSection',
       value: ''
+    });
+
+    storeSectionInput.autocomplete({
+      source: "/storeSections/autocomplete",
+      minLength: 2
     });
 
     var removeLink = $('<a>', {

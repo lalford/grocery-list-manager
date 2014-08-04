@@ -27,7 +27,10 @@ GET         /recipes/autocomplete                        controllers.RecipeContr
 GET         /recipes/:name                               controllers.RecipeController.findRecipe(name: String)
 POST        /recipes                                     controllers.RecipeController.createRecipe
 PUT         /recipes                                     controllers.RecipeController.updateRecipe
+
 GET         /foods/autocomplete                          controllers.RecipeController.foodsAutocomplete
+GET         /units/autocomplete                          controllers.RecipeController.unitsAutocomplete
+GET         /storeSections/autocomplete                  controllers.RecipeController.storeSectionAutocomplete
 
 GET         /migrate                                     controllers.RecipeController.migrateData
 
