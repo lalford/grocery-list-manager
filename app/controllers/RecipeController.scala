@@ -123,7 +123,7 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
   def recipesAutocomplete = Action.async { request =>
     val term = request.getQueryString("term")
     recipeService.findRecipes map { recipes =>
-      val matchingRecipes = term.map(t => recipes.filter(_.name.contains(t))).getOrElse(recipes)
+      val matchingRecipes = term.map(t => recipes.filter(_.name.toLowerCase.contains(t.toLowerCase))).getOrElse(recipes)
       val names = matchingRecipes map { recipe =>
         JsObject(Seq(
           "label" -> JsString(recipe.name),
