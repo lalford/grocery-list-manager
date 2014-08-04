@@ -23,9 +23,11 @@ GET         /groceryLists/:name/makeActive               controllers.GroceryList
 
 # json apis
 GET         /recipes                                     controllers.RecipeController.findRecipes
+GET         /recipes/autocomplete                        controllers.RecipeController.recipesAutocomplete
 GET         /recipes/:name                               controllers.RecipeController.findRecipe(name: String)
 POST        /recipes                                     controllers.RecipeController.createRecipe
 PUT         /recipes                                     controllers.RecipeController.updateRecipe
+GET         /foods/autocomplete                          controllers.RecipeController.foodsAutocomplete
 
 GET         /migrate                                     controllers.RecipeController.migrateData
 

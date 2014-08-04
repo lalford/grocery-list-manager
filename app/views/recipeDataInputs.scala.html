@@ -11,7 +11,7 @@
   </tr>
   @for(i <- recipeForm("recipeIngredients").indexes) {
     <tr>
-      <td class="ingredient-table"><input type="text" name="recipeIngredients[@i].name" value="@recipeForm("recipeIngredients")(s"[$i]")("name").value.getOrElse("")"></td>
+      <td class="ingredient-table"><input class="recipe-ingredient" type="text" name="recipeIngredients[@i].name" value="@recipeForm("recipeIngredients")(s"[$i]")("name").value.getOrElse("")"></td>
       <td class="ingredient-table"><input type="text" name="recipeIngredients[@i].desiredServings" value="@recipeForm("recipeIngredients")(s"[$i]")("desiredServings").value.getOrElse("")"></td>
       <td class="ingredient-table"><a class="delete">Remove</a></td>
     </tr>
@@ -30,7 +30,7 @@
   </tr>
   @for(i <- recipeForm("foodIngredients").indexes) {
     <tr>
-      <td class="ingredient-table"><input type="text" name="foodIngredients[@i].food" value="@recipeForm("foodIngredients")(s"[$i]")("food").value.getOrElse("")"></td>
+      <td class="ingredient-table"><input class="food-ingredient" type="text" name="foodIngredients[@i].food" value="@recipeForm("foodIngredients")(s"[$i]")("food").value.getOrElse("")"></td>
       <td class="ingredient-table"><input type="text" name="foodIngredients[@i].quantity" value="@recipeForm("foodIngredients")(s"[$i]")("quantity").value.getOrElse("")"></td>
       <td class="ingredient-table"><input type="text" name="foodIngredients[@i].unit" value="@recipeForm("foodIngredients")(s"[$i]")("unit").value.getOrElse("")"></td>
       <td class="ingredient-table"><input type="text" name="foodIngredients[@i].storeSection" value="@recipeForm("foodIngredients")(s"[$i]")("storeSection").value.getOrElse("")"></td>

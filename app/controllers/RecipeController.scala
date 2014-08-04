@@ -120,6 +120,39 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
     )
   }
 
+  def recipesAutocomplete = Action.async { request =>
+    val term = request.getQueryString("term")
+    recipeService.findRecipes map { recipes =>
+      val matchingRecipes = term.map(t => recipes.filter(_.name.contains(t))).getOrElse(recipes)
+      val names = matchingRecipes map { recipe =>
+        JsObject(Seq(
+          "label" -> JsString(recipe.name),
+          "value" -> JsString(recipe.name)
+        ))
+      }
+      Ok(Json.toJson(JsArray(names)))
+    }
+  }
+
+  def foodsAutocomplete = Action.async { implicit request => foodIngredientsFieldAutocomplete { fi => fi.food } }
+  def unitsAutocomplete = Action.async { implicit request => foodIngredientsFieldAutocomplete { fi => fi.unit.getOrElse("") } }
+  def storeSectionAutocomplete = Action.async { implicit request => foodIngredientsFieldAutocomplete { fi => fi.storeSection.getOrElse("") } }
+
+  private def foodIngredientsFieldAutocomplete(fieldFunc: FoodIngredient => String)(implicit request: Request[AnyContent]) = {
+    val term = request.getQueryString("term")
+    recipeService.findRecipes map { recipes =>
+      val foodIngredientFields = recipes.flatMap(recipe => recipe.foodIngredients.map(fieldFunc)).toSet
+      val matchingFields = term.map(t => foodIngredientFields.filter(f => f.nonEmpty && f.toLowerCase.contains(t.toLowerCase))).getOrElse(foodIngredientFields)
+      val fields = matchingFields map { field =>
+        JsObject(Seq(
+          "label" -> JsString(field),
+          "value" -> JsString(field)
+        ))
+      }
+      Ok(Json.toJson(JsArray(fields.toSeq)))
+    }
+  }
+
   // TODO - migration can be removed once everything is settled
   val findBasicRecipeData = SQL(
     """

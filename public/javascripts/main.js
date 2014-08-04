@@ -3,6 +3,20 @@ $(document).ready(function(){
     $(this).parent().parent().remove();
   });
 
+  $("table td input.recipe-ingredient").each(function(i) {
+    $(this).autocomplete({
+      source: "/recipes/autocomplete",
+      minLength: 2
+    });
+  });
+
+  $("table td input.food-ingredient").each(function(i) {
+    $(this).autocomplete({
+      source: "/foods/autocomplete",
+      minLength: 2
+    });
+  });
+
   $("#add-recipe-ingredient-link").click(function() {
     var newIndex = parseInt($("#next-recipe-ingredient-index").text());
     var nextIndex = newIndex + 1;
