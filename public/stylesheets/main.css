@@ -97,3 +97,21 @@ h1 {
 .next-index-field {
   display: none;
 }
+
+ul.shopping-list {
+  margin-left: 0px;
+  font-size: 14px;
+  list-style-type: none;
+}
+
+.shopping-list ul {
+  margin-left: 20px;
+  font-size: 14px;
+  list-style-type: none;
+}
+
+.shopping-list ul ul {
+  margin-left: 40px;
+  font-size: 14px;
+  list-style-type: none;
+}

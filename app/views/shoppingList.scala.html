@@ -1,5 +1,34 @@
-@(shoppingList: Map[StoreSection, Map[Food, List[QuantityUnit]]])(implicit requestContextData: RequestContextData, flash: Flash)
+@(groceryListName: String, shoppingList: Map[StoreSection, Map[Food, List[QuantityUnit]]])(implicit requestContextData: RequestContextData, flash: Flash)
 
 @pageLayout {
-
+  <h3>@groceryListName</h3>
+  <ul class="shopping-list">
+    @for(storeSectionFoods <- shoppingList) {
+      @defining(storeSectionFoods._1) { storeSection =>
+        @defining(storeSectionFoods._2) { foodsQuantities =>
+          <li>@storeSection
+            <ul>
+              @for(foodQuantities <- foodsQuantities) {
+                @defining(foodQuantities._1) { food =>
+                  @defining(foodQuantities._2) { quantities =>
+                    @if(quantities.isEmpty || quantities.length > 1) {
+                      <li>@food
+                        <ul>
+                        @for(quantity <- quantities) {
+                          <li>@quantity.quantity @quantity.unit</li>
+                        }
+                        </ul>
+                      </li>
+                    } else {
+                      <li>@food @quantities.head.quantity @quantities.head.unit</li>
+                    }
+                  }
+                }
+              }
+            </ul>
+          </li>
+        }
+      }
+    }
+  </ul>
 }

@@ -143,7 +143,7 @@ class GroceryListController(
   }
 
   def viewShoppingList(name: String) = ActionHelper.async { implicit requestContext =>
-    generateShoppingList(name)(sl => Ok(views.html.shoppingList(sl)))
+    generateShoppingList(name)(sl => Ok(views.html.shoppingList(name, sl)))
   }
 
   private def generateShoppingList(name: String)(resultFunc: Map[StoreSection, Map[Food, List[QuantityUnit]]] => SimpleResult) = {
