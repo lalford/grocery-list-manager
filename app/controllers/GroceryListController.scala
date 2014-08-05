@@ -15,6 +15,7 @@ class GroceryListController(
   import models._
   import models.JsonFormats._
 
+  def index = viewGroceryLists
   def viewGroceryLists = ActionHelper.async { implicit requestContext =>
     groceryListService.findGroceryLists map { allGroceryLists =>
       val sortedGroceryLists = allGroceryLists sortWith(_.name.toLowerCase < _.name.toLowerCase)
@@ -133,7 +134,19 @@ class GroceryListController(
     )
   }
 
-  def generateShoppingList(name: String) = Action.async {
+  def makeActiveGroceryList(name: String, redirectUrl: String) = Action {
+    Redirect(redirectUrl).withSession(ActionConstants.activeGroceryListKey -> name)
+  }
+
+  def shoppingList(name: String) = Action.async {
+    generateShoppingList(name)(sl => Ok(Json.toJson(sl)))
+  }
+
+  def viewShoppingList(name: String) = ActionHelper.async { implicit requestContext =>
+    generateShoppingList(name)(sl => Ok(views.html.shoppingList(sl)))
+  }
+
+  private def generateShoppingList(name: String)(resultFunc: Map[StoreSection, Map[Food, List[QuantityUnit]]] => SimpleResult) = {
     groceryListService.findGroceryList(name) flatMap {
       case None => Future.successful(NotFound)
       case Some(groceryList) => {
@@ -161,13 +174,9 @@ class GroceryListController(
           }
         }
 
-        shoppingList.future map (sl => Ok(Json.toJson(sl)))
+        shoppingList.future map resultFunc
       }
     }
-  }
-
-  def makeActiveGroceryList(name: String, redirectUrl: String) = Action {
-    Redirect(redirectUrl).withSession(ActionConstants.activeGroceryListKey -> name)
   }
 
   private def findRecipesAndServings(groceryList: GroceryList): Future[List[(Recipe, Double)]] = {

@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET         /                                            controllers.Application.index
+GET         /                                            controllers.GroceryListController.index
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                                controllers.Assets.at(path="/public", file)
@@ -17,6 +17,7 @@ GET         /recipes/new                                 controllers.RecipeContr
 GET         /groceryLists/view                           controllers.GroceryListController.viewGroceryLists
 GET         /groceryLists/:name/view                     controllers.GroceryListController.viewGroceryList(name: String)
 GET         /groceryLists/new                            controllers.GroceryListController.newGroceryList
+GET         /groceryLists/:name/shoppingList/view        controllers.GroceryListController.viewShoppingList(name: String)
 
 # set the active grocery list cookie
 GET         /groceryLists/:name/makeActive               controllers.GroceryListController.makeActiveGroceryList(name: String, redirectUrl: String)
@@ -38,7 +39,7 @@ GET         /groceryLists                                controllers.GroceryList
 GET         /groceryLists/:name                          controllers.GroceryListController.findGroceryList(name: String)
 POST        /groceryLists                                controllers.GroceryListController.createGroceryList
 PUT         /groceryLists                                controllers.GroceryListController.updateGroceryList
-GET         /groceryLists/:name/shoppingList             controllers.GroceryListController.generateShoppingList(name: String)
+GET         /groceryLists/:name/shoppingList             controllers.GroceryListController.shoppingList(name: String)
 
 # form apis
 POST        /recipes/formCreate                          controllers.RecipeController.createFormRecipe
