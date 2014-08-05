@@ -21,7 +21,7 @@ object ActionHelper extends ActionBuilder[RequestContext] {
       val activeGroceryList = for {
         name <- request.session.get(ActionConstants.activeGroceryListKey)
         gl <- groceryLists.find(_.name == name)
-      } yield ActiveGroceryList(gl, routes.GroceryListController.viewGroceryList(name).url)
+      } yield ActiveGroceryList(gl, routes.GroceryListController.viewGroceryList(name).url, routes.GroceryListController.viewShoppingList(name).url)
 
       val navigationLinks = NavigationLinks(
         lastUrl = redirectUrl,
@@ -49,7 +49,7 @@ object ActionConstants {
 
 case class GroceryListActivator(name: String, activatorUrl: String)
 
-case class ActiveGroceryList(groceryList: GroceryList, groceryListUrl: String)
+case class ActiveGroceryList(groceryList: GroceryList, groceryListUrl: String, shoppingListUrl: String)
 
 case class NavigationLinks(lastUrl: String,
                            newGroceryListUrl: String,

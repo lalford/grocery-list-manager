@@ -37,6 +37,8 @@
           @if(requestContextData.activeGroceryList.isDefined) {
             @defining(requestContextData.activeGroceryList.get) { activeGroceryList =>
               <b><a href="@activeGroceryList.groceryListUrl">@activeGroceryList.groceryList.name</a></b>
+              <br>
+              <b><a href="@activeGroceryList.shoppingListUrl">Shopping List</a></b>
             }
           }
           <ul>
