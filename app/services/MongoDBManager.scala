@@ -1,14 +1,27 @@
 package services
 
-import reactivemongo.api.{DB, DefaultDB, MongoDriver}
+import play.api.Logger
+import reactivemongo.api.{MongoConnection, DB, DefaultDB, MongoDriver}
 import reactivemongo.core.nodeset.Authenticate
 import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success}
 
 object MongoDBManager {
   implicit val ec: ExecutionContext = ExecutionContext.Implicits.global
 
   lazy val driver = new MongoDriver
-  lazy val connection = driver.connection(Seq("localhost"), Seq(Authenticate("recipe-manager", "manager", "manager!")))
+  lazy val connection = {
+    val mongoHqUrl = System.getenv("MONGOHQ_URL")
+    if (mongoHqUrl == null || mongoHqUrl.isEmpty)
+      driver.connection(Seq("localhost"), Seq(Authenticate("recipe-manager", "manager", "manager!")))
+    else
+      MongoConnection.parseURI(mongoHqUrl) match {
+        case Success(uri) => driver.connection(uri)
+        case Failure(t) =>
+          Logger.error("could not parse mongohq url", t)
+          throw t
+      }
+  }
 
   def dbFactory(name: String): DefaultDB = DB(name, connection)
 
