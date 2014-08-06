@@ -33,8 +33,6 @@ GET         /foods/autocomplete                          controllers.RecipeContr
 GET         /units/autocomplete                          controllers.RecipeController.unitsAutocomplete
 GET         /storeSections/autocomplete                  controllers.RecipeController.storeSectionAutocomplete
 
-GET         /migrate                                     controllers.RecipeController.migrateData
-
 GET         /groceryLists                                controllers.GroceryListController.findGroceryLists
 GET         /groceryLists/:name                          controllers.GroceryListController.findGroceryList(name: String)
 POST        /groceryLists                                controllers.GroceryListController.createGroceryList

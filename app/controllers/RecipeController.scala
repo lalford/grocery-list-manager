@@ -6,11 +6,6 @@ import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
 import services.RecipeService
 import scala.concurrent.{Promise, Future}
-import anorm._
-import play.api.db.DB
-import org.joda.time.DateTime
-import java.util.Date
-
 import scala.util.{Failure, Success}
 
 class RecipeController(recipeService: RecipeService) extends Controller with TemplateHelpers with RequestHelpers {
@@ -151,76 +146,6 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
       }
       Ok(Json.toJson(JsArray(fields.toSeq)))
     }
-  }
-
-  // TODO - migration can be removed once everything is settled
-  val findBasicRecipeData = SQL(
-    """
-      select name, servings, directions, created_at created
-      from recipes
-      order by name;
-    """)
-
-  val findRecipeIngredients = SQL(
-    """
-      select f.name food, i.quantity, i.unit_name, ss.name store_section
-      from foods f
-      join store_sections ss on (ss.id = f.store_section_id)
-      join ingredients i on (i.food_id = f.id)
-      join recipes r on (r.id = i.recipe_id)
-      where r.name = {recipeName};
-    """)
-
-  // TODO - correct execution context management for blocking operations
-  import play.api.libs.concurrent.Execution.Implicits.defaultContext
-  import play.api.Play.current
-  def migrateData = Action.async {
-    val extractedRecipes = DB.withConnection { implicit c =>
-      val recipes = findBasicRecipeData().map(row => {
-        Recipe(
-          name = row[String]("name"),
-          servings = row[Int]("servings").toDouble,
-          foodIngredients = List(),
-          recipeIngredients = List(),
-          directions = row[Option[String]]("directions"),
-          tags = List("recipe"),
-          created = Option(new DateTime(row[Date]("created")))
-        )
-      }).toList
-
-      recipes.map(recipe => {
-        val foodIngredients = findRecipeIngredients.on("recipeName" -> recipe.name)().map(row => {
-          FoodIngredient(
-            food = row[String]("food"),
-            quantity = row[Option[Double]]("quantity").getOrElse(0),
-            unit = row[Option[String]]("unit_name"),
-            storeSection = row[Option[String]]("store_section")
-          )
-        }).toList
-
-        Recipe(
-          recipe.name,
-          recipe.servings,
-          foodIngredients,
-          List(), // nested recipes previously unsupported
-          recipe.directions,
-          recipe.tags,
-          recipe.created
-        )
-      })
-    }
-
-    extractedRecipes.foreach { recipe =>
-      val result = Promise[SimpleResult]()
-      recipeService.insertRecipe(recipe).onComplete {
-        case Success(_) => result.success(Created)
-        case Failure(e) if e.isInstanceOf[IllegalArgumentException] => result.success(BadRequest(e.getMessage))
-        case Failure(e) => result.success(InternalServerError)
-      }
-      result.future
-    }
-
-    Future(Ok(extractedRecipes.mkString("\n\n")))
   }
 }
 
