@@ -16,7 +16,10 @@ object MongoDBManager {
       driver.connection(Seq("localhost"), Seq(Authenticate("recipe-manager", "manager", "manager!")))
     else
       MongoConnection.parseURI(mongoHqUrl) match {
-        case Success(uri) => driver.connection(uri)
+        case Success(uri) =>
+          // TODO - figure out why parsed uri doesn't work
+          //driver.connection(uri)
+          driver.connection(Seq("kahana.mongohq.com:10038"), Seq(Authenticate("app28153345", "manager", "manager!")))
         case Failure(t) =>
           Logger.error("could not parse mongohq url", t)
           throw t
