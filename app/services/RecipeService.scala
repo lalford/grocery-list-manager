@@ -9,7 +9,6 @@ import scala.concurrent.{Promise, Future}
 import scala.util.{Failure, Success}
 
 class RecipeService extends MongoDataSource {
-  override val dbName = "recipe-manager"
   lazy val recipes: BSONCollection = db("recipes")
 
   import models.BSONHandlers._

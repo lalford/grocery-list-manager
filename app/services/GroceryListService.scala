@@ -7,7 +7,6 @@ import reactivemongo.bson.BSONDocument
 import scala.concurrent.Future
 
 class GroceryListService extends MongoDataSource {
-  override val dbName = "recipe-manager"
   lazy val groceryLists: BSONCollection = db("grocery_lists")
 
   import models.BSONHandlers._
