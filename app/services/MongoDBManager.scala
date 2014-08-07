@@ -21,7 +21,6 @@ object MongoDBManager {
     MongoConnection.parseURI(url) match {
       case Success(uri) =>
         Logger.info(s"mongo url = $url, parsed uri = $uri")
-        println(s"mongo url = $url, parsed uri = $uri")
         driver.connection(uri)
       case Failure(t) =>
         Logger.error("could not parse mongodb url", t)
