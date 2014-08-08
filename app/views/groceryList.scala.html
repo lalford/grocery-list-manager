@@ -2,5 +2,5 @@
 
 @pageLayout {
   <h3>@groceryList.name</h3>
-  @groceryListData(groceryList)
+  @groceryListData(groceryList, editUrl = Some(routes.GroceryListController.editGroceryList(groceryList.name).url), deleteUrl = Some(routes.GroceryListController.deleteGroceryList(groceryList.name).url))
 }

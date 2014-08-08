@@ -78,6 +78,12 @@ class GroceryListController(
     )
   }
 
+  def editGroceryList(name: String) = ActionHelper.async { implicit requestContext =>
+    groceryListService.findGroceryList(name) map { groceryList =>
+      groceryList.map(gl => Ok(views.html.editGroceryList())).getOrElse(NotFound)
+    }
+  }
+
   def addRecipeServings(name: String) = Action.async { implicit request =>
     def addToList(addRecipeServingData: AddRecipeServing) = {
       val redirectUrl = addRecipeServingData.redirectUrl
@@ -132,6 +138,26 @@ class GroceryListController(
         }
       }
     )
+  }
+
+  def deleteGroceryList(name: String) = ActionHelper.async { requestContext =>
+    val result = Redirect(routes.GroceryListController.viewGroceryLists)
+    val resultWithFlashing = Promise[SimpleResult]()
+
+    groceryListService.deleteGroceryList(name) onComplete {
+      case Success(_) =>
+        if (requestContext.activeGroceryList.exists(_.groceryList.name == name))
+          resultWithFlashing.success(
+            result
+            .flashing("success" -> s"Grocery List Removed - $name")
+            .withSession(requestContext.session - ActionConstants.activeGroceryListKey)
+          )
+        else
+          resultWithFlashing.success(result.flashing("success" -> s"Grocery List Removed - $name"))
+      case Failure(e) => resultWithFlashing.success(result.flashing("error" -> s"Failed - ${e.getMessage}"))
+    }
+
+    resultWithFlashing.future
   }
 
   def makeActiveGroceryList(name: String, redirectUrl: String) = Action {

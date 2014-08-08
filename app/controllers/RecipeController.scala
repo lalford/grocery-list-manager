@@ -4,11 +4,11 @@ import play.api._
 import play.api.mvc._
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.libs.json._
-import services.RecipeService
+import services.{GroceryListService, RecipeService}
 import scala.concurrent.{Promise, Future}
 import scala.util.{Failure, Success}
 
-class RecipeController(recipeService: RecipeService) extends Controller with TemplateHelpers with RequestHelpers {
+class RecipeController(recipeService: RecipeService, groceryListService: GroceryListService) extends Controller with TemplateHelpers with RequestHelpers {
   import models._
   import models.JsonFormats._
 
@@ -116,8 +116,11 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
   }
 
   def deleteRecipe(name: String) = Action.async {
-    val result = Redirect(routes.RecipeController.viewRecipes.url)
+
+    val result = Redirect(routes.RecipeController.viewRecipes)
     val resultPromise = Promise[SimpleResult]()
+
+    // TODO - need to remove this recipe from any grocery lists too
     recipeService.deleteRecipe(name).onComplete {
       case Success(_) =>
         resultPromise.success(result.flashing("success" -> s"Recipe Removed - $name"))
@@ -161,4 +164,4 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
   }
 }
 
-object RecipeController extends RecipeController(new RecipeService)
+object RecipeController extends RecipeController(new RecipeService, new GroceryListService)

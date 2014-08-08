@@ -13,10 +13,13 @@ GET         /recipes/view                                controllers.RecipeContr
 GET         /recipes/:name/view                          controllers.RecipeController.viewRecipe(name: String)
 GET         /recipes/:name/edit                          controllers.RecipeController.editRecipe(name: String)
 GET         /recipes/new                                 controllers.RecipeController.newRecipe
+GET         /recipes/:name/delete                        controllers.RecipeController.deleteRecipe(name: String)
 
 GET         /groceryLists/view                           controllers.GroceryListController.viewGroceryLists
 GET         /groceryLists/:name/view                     controllers.GroceryListController.viewGroceryList(name: String)
+GET         /groceryLists/:name/edit                     controllers.GroceryListController.editGroceryList(name: String)
 GET         /groceryLists/new                            controllers.GroceryListController.newGroceryList
+GET         /groceryLists/:name/delete                   controllers.GroceryListController.deleteGroceryList(name: String)
 GET         /groceryLists/:name/shoppingList/view        controllers.GroceryListController.viewShoppingList(name: String)
 
 # set the active grocery list cookie
@@ -28,7 +31,6 @@ GET         /recipes/autocomplete                        controllers.RecipeContr
 GET         /recipes/:name                               controllers.RecipeController.findRecipe(name: String)
 POST        /recipes                                     controllers.RecipeController.createRecipe
 PUT         /recipes                                     controllers.RecipeController.updateRecipe
-GET         /recipes/:name/delete                        controllers.RecipeController.deleteRecipe(name: String)
 
 GET         /foods/autocomplete                          controllers.RecipeController.foodsAutocomplete
 GET         /units/autocomplete                          controllers.RecipeController.unitsAutocomplete

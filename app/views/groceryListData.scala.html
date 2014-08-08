@@ -1,8 +1,16 @@
-@(groceryList: GroceryList, groceryListUrl: Option[String] = None)
+@(groceryList: GroceryList, viewUrl: Option[String] = None, editUrl: Option[String] = None, deleteUrl: Option[String] = None)(implicit requestContextData: RequestContextData, flash: Flash)
 
 <div class="panel-body">
-@if(groceryListUrl.isDefined) {
-  <h5><a href="@groceryListUrl.get">View</a></h5>
+@if(viewUrl.isDefined) {
+  <h4><a href="@viewUrl.get">View</a></h4>
+  <br>
+}
+@if(editUrl.isDefined) {
+  <h4><a href="@editUrl.get">Edit</a></h4>
+  <br>
+}
+@if(deleteUrl.isDefined) {
+  <h4><a href="@deleteUrl.get" class="delete-confirmation">Delete</a></h4>
   <br>
 }
   <h5>Recipes</h5>

@@ -50,15 +50,29 @@ class GroceryListService extends MongoDataSource {
 
   def updateGroceryList(groceryList: GroceryList) = {
     groceryLists
-      .update(BSONDocument("name" -> groceryList.name), groceryList)
-      .flatMap { lastError =>
-        Logger.debug(s"updated ${groceryList.name} with LastError: $lastError")
-        if (lastError.ok)
-          Future.successful(groceryList)
-        else {
-          Logger.error(s"update failed: ${lastError.err.getOrElse("")}")
-          Future.failed(lastError)
-        }
+    .update(BSONDocument("name" -> groceryList.name), groceryList)
+    .flatMap { lastError =>
+      Logger.debug(s"updated ${groceryList.name} with LastError: $lastError")
+      if (lastError.ok)
+        Future.successful(groceryList)
+      else {
+        Logger.error(s"update failed: ${lastError.err.getOrElse("")}")
+        Future.failed(lastError)
       }
+    }
+  }
+
+  def deleteGroceryList(name: String) = {
+    groceryLists
+    .remove(BSONDocument("name" -> name))
+    .flatMap { lastError =>
+      Logger.debug(s"removed $name with LastError: $lastError")
+      if (lastError.ok)
+        Future.successful(name)
+      else {
+        Logger.error(s"remove failed: ${lastError.err.getOrElse("")}")
+        Future.failed(lastError)
+      }
+    }
   }
 }
