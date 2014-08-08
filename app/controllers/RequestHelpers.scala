@@ -27,7 +27,7 @@ trait RequestHelpers {
 
   val foodIngredientMapping = mapping(
     "food" -> nonEmptyText,
-    "quantity" -> bigDecimal.verifying(_ > 0),
+    "quantity" -> bigDecimal.verifying(_ >= 0),
     "unit" -> optional(nonEmptyText),
     "storeSection" -> optional(nonEmptyText)
   )(foodIngredientApply)(foodIngredientUnapply)
