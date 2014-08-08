@@ -4,7 +4,8 @@ import models.GroceryList
 import play.api.Logger
 import reactivemongo.api.collections.default.BSONCollection
 import reactivemongo.bson.BSONDocument
-import scala.concurrent.Future
+import scala.concurrent.{Promise, Future}
+import scala.util.{Failure, Success}
 
 class GroceryListService extends MongoDataSource {
   lazy val groceryLists: BSONCollection = db("grocery_lists")
@@ -72,6 +73,29 @@ class GroceryListService extends MongoDataSource {
       else {
         Logger.error(s"remove failed: ${lastError.err.getOrElse("")}")
         Future.failed(lastError)
+      }
+    }
+  }
+
+  def deleteRecipeFromGroceryLists(name: String) = {
+    findGroceryLists flatMap { allGroceryLists =>
+      Future.traverse(allGroceryLists) { groceryList =>
+        val updatePromise = Promise[Option[String]]()
+
+        if (groceryList.recipeServings.exists(rs => rs.name == name)) {
+          val cleanedRS = groceryList.recipeServings.filterNot(rs => rs.name == name)
+
+          updateGroceryList(groceryList.copy(recipeServings = cleanedRS)) onComplete {
+            case Success(_) =>
+              updatePromise.success(Some(groceryList.name))
+            case Failure(t) =>
+              Logger.error(s"failed to remove included recipe $name! mongo problem?", t)
+              updatePromise.success(Some(groceryList.name))
+          }
+        } else
+          updatePromise.success(None)
+
+        updatePromise.future
       }
     }
   }

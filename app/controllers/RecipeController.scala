@@ -116,17 +116,23 @@ class RecipeController(recipeService: RecipeService, groceryListService: Grocery
   }
 
   def deleteRecipe(name: String) = Action.async {
-
     val result = Redirect(routes.RecipeController.viewRecipes)
     val resultPromise = Promise[SimpleResult]()
 
-    // TODO - need to remove this recipe from any grocery lists too
-    recipeService.deleteRecipe(name).onComplete {
-      case Success(_) =>
-        resultPromise.success(result.flashing("success" -> s"Recipe Removed - $name"))
-      case Failure(e) =>
-        resultPromise.success(result.flashing("error" -> s"Failed - ${e.getMessage}"))
+    // TODO - need working strategy on the view side for multiple success flashing for all results, can't use the same key
+    for {
+      groceryListDeletes <- groceryListService.deleteRecipeFromGroceryLists(name)
+      otherRecipeDeletes <- recipeService.deleteRecipeFromOtherRecipes(name)
+      recipeDelete <- recipeService.deleteRecipe(name)
+    } yield {
+      val groceryListDeletesFlashing = groceryListDeletes.filter(_.isDefined).map(nameOpt => "success" -> s"Recipe Removed From Grocery List - ${nameOpt.get}")
+      val otherRecipeDeletesFlashing = otherRecipeDeletes.filter(_.isDefined).map(nameOpt => "success" -> s"Recipe Removed From Ingredients - ${nameOpt.get}")
+      val recipeDeleteFlashing = List("success" -> s"Recipe Removed - $name")
+
+      val flashing = groceryListDeletesFlashing ++ otherRecipeDeletesFlashing ++ recipeDeleteFlashing
+      resultPromise.success(flashing.foldLeft(result) { case (res, next) => res.flashing(next) })
     }
+
     resultPromise.future
   }
 

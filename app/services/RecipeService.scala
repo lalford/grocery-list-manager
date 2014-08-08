@@ -64,38 +64,41 @@ class RecipeService extends MongoDataSource {
     }
   }
 
-  def deleteRecipe(name: String) = {
-    def removeFromIngredients =
-      findRecipes map { allRecipes =>
-        Future.traverse(allRecipes) { recipe =>
-          val updatePromise = Promise[Unit]()
-          if (recipe.recipeIngredients.exists(ri => ri.name == name)) {
-            val cleanedRI = recipe.recipeIngredients.filterNot(ri => ri.name == name)
-            updateRecipe(recipe.copy(recipeIngredients = cleanedRI)).onComplete {
-              case Success(_) => updatePromise.success(Logger.info(s"removed $name from ingredients of ${recipe.name}"))
-              case Failure(t) => updatePromise.success(Logger.error(s"failed to remove $name from ingredients of ${recipe.name}"))
-            }
-          } else {
-            updatePromise.success()
+  def deleteRecipeFromOtherRecipes(name: String): Future[List[Option[String]]] = {
+    findRecipes flatMap { allRecipes =>
+      Future.traverse(allRecipes) { recipe =>
+        val updatePromise = Promise[Option[String]]()
+
+        if (recipe.recipeIngredients.exists(ri => ri.name == name)) {
+          val cleanedRI = recipe.recipeIngredients.filterNot(ri => ri.name == name)
+
+          updateRecipe(recipe.copy(recipeIngredients = cleanedRI)) onComplete {
+            case Success(_) =>
+              updatePromise.success(Some(recipe.name))
+            case Failure(t) =>
+              Logger.error(s"failed to remove included recipe $name! mongo problem?", t)
+              updatePromise.success(Some(recipe.name))
           }
-          updatePromise.future
-        }
-      }
+        } else
+          updatePromise.success(None)
 
-    def removeRecipe =
-      recipes
-      .remove(BSONDocument("name" -> name))
-      .flatMap { lastError =>
-        Logger.debug(s"removed $name with LastError: $lastError")
-        if (lastError.ok)
-          Future.successful(name)
-        else {
-          Logger.error(s"remove failed: ${lastError.err.getOrElse("")}")
-          Future.failed(lastError)
-        }
+        updatePromise.future
       }
+    }
+  }
 
-    removeFromIngredients andThen { case _ => removeRecipe }
+  def deleteRecipe(name: String) = {
+    recipes
+    .remove(BSONDocument("name" -> name))
+    .flatMap { lastError =>
+      Logger.debug(s"removed $name with LastError: $lastError")
+      if (lastError.ok)
+        Future.successful(name)
+      else {
+        Logger.error(s"remove failed: ${lastError.err.getOrElse("")}")
+        Future.failed(lastError)
+      }
+    }
   }
 
   private def checkEmbeddedRecipes(recipe: Recipe)(persistRecipe: => Future[Recipe]) = {
