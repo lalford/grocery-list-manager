@@ -115,6 +115,18 @@ class RecipeController(recipeService: RecipeService) extends Controller with Tem
     )
   }
 
+  def deleteRecipe(name: String) = Action.async {
+    val result = Redirect(routes.RecipeController.viewRecipes.url)
+    val resultPromise = Promise[SimpleResult]()
+    recipeService.deleteRecipe(name).onComplete {
+      case Success(_) =>
+        resultPromise.success(result.flashing("success" -> s"Recipe Removed - $name"))
+      case Failure(e) =>
+        resultPromise.success(result.flashing("error" -> s"Failed - ${e.getMessage}"))
+    }
+    resultPromise.future
+  }
+
   def recipesAutocomplete = Action.async { request =>
     val term = request.getQueryString("term")
     recipeService.findRecipes map { recipes =>

@@ -1,4 +1,4 @@
-@(recipe: Recipe, viewUrl: Option[String] = None, editUrl: Option[String] = None)(implicit requestContextData: RequestContextData, flash: Flash)
+@(recipe: Recipe, viewUrl: Option[String] = None, editUrl: Option[String] = None, deleteUrl: Option[String] = None)(implicit requestContextData: RequestContextData, flash: Flash)
 
 @import helper._
 
@@ -9,6 +9,10 @@
 }
 @if(editUrl.isDefined) {
   <h4><a href="@editUrl.get">Edit</a></h4>
+  <br>
+}
+@if(deleteUrl.isDefined) {
+  <h4><a href="@deleteUrl.get" class="delete-confirmation">Delete</a></h4>
   <br>
 }
 @if(requestContextData.activeGroceryList.isDefined) {

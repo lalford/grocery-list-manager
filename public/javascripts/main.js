@@ -151,4 +151,7 @@ $(document).ready(function(){
     $('#tag-table').find('tr:last').after(newTr);
   });
 
+  $('.delete-confirmation').on('click', function () {
+    return confirm("Really delete?");
+  });
 });

@@ -52,16 +52,50 @@ class RecipeService extends MongoDataSource {
 
   def updateRecipe(recipe: Recipe) = checkEmbeddedRecipes(recipe) {
     recipes
-      .update(BSONDocument("name" -> recipe.name), recipe)
+    .update(BSONDocument("name" -> recipe.name), recipe)
+    .flatMap { lastError =>
+      Logger.debug(s"updated ${recipe.name} with LastError: $lastError")
+      if (lastError.ok)
+        Future.successful(recipe)
+      else {
+        Logger.error(s"update failed: ${lastError.err.getOrElse("")}")
+        Future.failed(lastError)
+      }
+    }
+  }
+
+  def deleteRecipe(name: String) = {
+    def removeFromIngredients =
+      findRecipes map { allRecipes =>
+        Future.traverse(allRecipes) { recipe =>
+          val updatePromise = Promise[Unit]()
+          if (recipe.recipeIngredients.exists(ri => ri.name == name)) {
+            val cleanedRI = recipe.recipeIngredients.filterNot(ri => ri.name == name)
+            updateRecipe(recipe.copy(recipeIngredients = cleanedRI)).onComplete {
+              case Success(_) => updatePromise.success(Logger.info(s"removed $name from ingredients of ${recipe.name}"))
+              case Failure(t) => updatePromise.success(Logger.error(s"failed to remove $name from ingredients of ${recipe.name}"))
+            }
+          } else {
+            updatePromise.success()
+          }
+          updatePromise.future
+        }
+      }
+
+    def removeRecipe =
+      recipes
+      .remove(BSONDocument("name" -> name))
       .flatMap { lastError =>
-        Logger.debug(s"updated ${recipe.name} with LastError: $lastError")
+        Logger.debug(s"removed $name with LastError: $lastError")
         if (lastError.ok)
-          Future.successful(recipe)
+          Future.successful(name)
         else {
-          Logger.error(s"update failed: ${lastError.err.getOrElse("")}")
+          Logger.error(s"remove failed: ${lastError.err.getOrElse("")}")
           Future.failed(lastError)
         }
-    }
+      }
+
+    removeFromIngredients andThen { case _ => removeRecipe }
   }
 
   private def checkEmbeddedRecipes(recipe: Recipe)(persistRecipe: => Future[Recipe]) = {
