@@ -57,6 +57,22 @@ trait RequestHelpers {
 
   def recipeUnapply(r: Recipe) = Some((r.name, BigDecimal(r.servings), r.foodIngredients, r.recipeIngredients, r.directions, r.tags))
 
+  val groceryListForm = Form(
+    mapping(
+      "name" -> nonEmptyText,
+      "recipeServings" -> list(recipeServingMapping),
+      "miscellaneous" -> list(foodIngredientMapping)
+    )(groceryListApply)(groceryListUnapply)
+  )
+
+  def groceryListApply(name: String,
+                       recipeServings: List[RecipeServing] = List(),
+                       miscellaneous: List[FoodIngredient] = List()) = {
+    GroceryList(name, recipeServings, miscellaneous)
+  }
+
+  def groceryListUnapply(gl: GroceryList) = Some((gl.name, gl.recipeServings, gl.miscellaneous))
+
   def formErrorsFlashing[T](formWithErrors: Form[T]) = {
     formWithErrors.errors.map(e => s"${e.key} - ${e.message}").mkString("\n")
   }

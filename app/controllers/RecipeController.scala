@@ -93,10 +93,8 @@ class RecipeController(recipeService: RecipeService, groceryListService: Grocery
         recipeService.updateRecipe(boundRecipe).onComplete {
           case Success(recipe) =>
             result.success(Redirect(routes.RecipeController.viewRecipe(recipe.name)).flashing("success" -> s"Recipe Updated - ${recipe.name}"))
-          case Failure(e) if e.isInstanceOf[IllegalArgumentException] =>
-            result.success(Redirect(routes.RecipeController.editRecipe(boundRecipe.name)).flashing("error" -> s"Failed - ${e.getMessage}"))
           case Failure(e) =>
-            result.success(InternalServerError)
+            result.success(Redirect(routes.RecipeController.editRecipe(boundRecipe.name)).flashing("error" -> s"Failed - ${e.getMessage}"))
         }
         result.future
       }

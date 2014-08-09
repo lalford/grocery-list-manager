@@ -1,5 +1,12 @@
-@()(implicit requestContextData: RequestContextData, flash: Flash)
+@(groceryListForm: Form[GroceryList])(implicit requestContextData: RequestContextData, flash: Flash)
+
+@import helper.form
 
 @pageLayout {
-  TODO
+  @form(action = requestContextData.callWithRedirectUrl(routes.GroceryListController.updateFormGroceryList()), 'class -> "create-grocery-list-form") {
+    <b><p>@groceryListForm("name").value.getOrElse("")</p></b>
+    <input type="text" name="name" value="@groceryListForm("name").value.getOrElse("")" hidden="true">
+    @groceryListDataInputs(groceryListForm)
+    <input type="submit" value="Update Grocery List">
+  }
 }

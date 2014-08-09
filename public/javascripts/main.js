@@ -31,14 +31,14 @@ $(document).ready(function(){
     });
   });
 
-  $("#add-recipe-ingredient-link").click(function() {
+  function addNamedRecipeServingLink(inputNamePrefix) {
     var newIndex = parseInt($("#next-recipe-ingredient-index").text());
     var nextIndex = newIndex + 1;
     $('#next-recipe-ingredient-index').text(nextIndex);
 
     var nameInput = $('<input>', {
       type: 'text',
-      name: 'recipeIngredients[' + newIndex + '].name',
+      name: inputNamePrefix + '[' + newIndex + '].name',
       value: ''
     });
 
@@ -49,7 +49,7 @@ $(document).ready(function(){
 
     var servingsInput = $('<input>', {
       type: 'text',
-      name: 'recipeIngredients[' + newIndex + '].desiredServings',
+      name: inputNamePrefix + '[' + newIndex + '].desiredServings',
       value: '0.0'
     });
 
@@ -65,16 +65,19 @@ $(document).ready(function(){
     var newTr = $('<tr>').append(nameTd).append(servingsTd).append(removeTd);
 
     $('#recipe-ingredient-table').find('tr:last').after(newTr);
-  });
+  }
 
-  $("#add-food-ingredient-link").click(function() {
+  $("#add-recipe-ingredient-link").click(function() { addNamedRecipeServingLink("recipeIngredients") });
+  $("#add-recipe-serving-link").click(function() { addNamedRecipeServingLink("recipeServings") });
+
+  function addNamedFoodIngredientLink(inputNamePrefix) {
     var newIndex = parseInt($("#next-food-ingredient-index").text());
     var nextIndex = newIndex + 1;
     $('#next-food-ingredient-index').text(nextIndex);
 
     var foodInput = $('<input>', {
       type: 'text',
-      name: 'foodIngredients[' + newIndex + '].food',
+      name: inputNamePrefix + '[' + newIndex + '].food',
       value: ''
     });
 
@@ -85,13 +88,13 @@ $(document).ready(function(){
 
     var quantityInput = $('<input>', {
       type: 'text',
-      name: 'foodIngredients[' + newIndex + '].quantity',
+      name: inputNamePrefix + '[' + newIndex + '].quantity',
       value: ''
     });
 
     var unitInput = $('<input>', {
       type: 'text',
-      name: 'foodIngredients[' + newIndex + '].unit',
+      name: inputNamePrefix + '[' + newIndex + '].unit',
       value: ''
     });
 
@@ -102,7 +105,7 @@ $(document).ready(function(){
 
     var storeSectionInput = $('<input>', {
       type: 'text',
-      name: 'foodIngredients[' + newIndex + '].storeSection',
+      name: inputNamePrefix + '[' + newIndex + '].storeSection',
       value: ''
     });
 
@@ -125,7 +128,10 @@ $(document).ready(function(){
     var newTr = $('<tr>').append(foodTd).append(quantityTd).append(unitTd).append(storeSectionTd).append(removeTd);
 
     $('#food-ingredient-table').find('tr:last').after(newTr);
-  });
+  }
+
+  $("#add-food-ingredient-link").click(function() { addNamedFoodIngredientLink("foodIngredients") });
+  $("#add-miscellaneous-link").click(function() { addNamedFoodIngredientLink("miscellaneous") });
 
   $("#add-tag-link").click(function () {
     var newIndex = parseInt($("#next-tag-index").text());

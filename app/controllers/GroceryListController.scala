@@ -78,12 +78,6 @@ class GroceryListController(
     )
   }
 
-  def editGroceryList(name: String) = ActionHelper.async { implicit requestContext =>
-    groceryListService.findGroceryList(name) map { groceryList =>
-      groceryList.map(gl => Ok(views.html.editGroceryList())).getOrElse(NotFound)
-    }
-  }
-
   def addRecipeServings(name: String) = Action.async { implicit request =>
     def addToList(addRecipeServingData: AddRecipeServing) = {
       val redirectUrl = addRecipeServingData.redirectUrl
@@ -125,6 +119,32 @@ class GroceryListController(
     addRecipeServingForm.bindFromRequest.fold(
       formWithErrors => Future.successful(BadRequest(s"add recipe servings form invalid. ${formWithErrors.errors.map(_.message).mkString}")),
       addToList
+    )
+  }
+
+  def editGroceryList(name: String) = ActionHelper.async { implicit requestContext =>
+    groceryListService.findGroceryList(name) map { groceryList =>
+      groceryList.map(gl => Ok(views.html.editGroceryList(groceryListForm.fill(gl)))).getOrElse(NotFound)
+    }
+  }
+
+  def updateFormGroceryList = Action.async { implicit request =>
+    val redirectUrl = request.getQueryString("redirectUrl")
+    groceryListForm.bindFromRequest.fold(
+      formWithErrors => {
+        val result = redirectUrl.map(Redirect(_)).getOrElse(BadRequest(s"grocery list form invalid. ${formWithErrors.errors.map(_.message).mkString}"))
+        Future.successful(result.flashing("error" -> formErrorsFlashing(formWithErrors)))
+      },
+      boundGroceryList => {
+        val result = Promise[SimpleResult]()
+        groceryListService.updateGroceryList(boundGroceryList).onComplete {
+          case Success(groceryList) =>
+            result.success(Redirect(routes.GroceryListController.viewGroceryList(groceryList.name)).flashing("success" -> s"Grocery List Updated - ${groceryList.name}"))
+          case Failure(e) =>
+            result.success(Redirect(routes.GroceryListController.editGroceryList(boundGroceryList.name)).flashing("error" -> s"Failed - ${e.getMessage}"))
+        }
+        result.future
+      }
     )
   }
 

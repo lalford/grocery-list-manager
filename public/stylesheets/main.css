@@ -89,6 +89,11 @@ h1 {
   font-size: 14px;
 }
 
+.create-grocery-list-form {
+  display: block;
+  font-size: 14px;
+}
+
 .ingredient-table {
   border-collapse: collapse;
   padding:5px;

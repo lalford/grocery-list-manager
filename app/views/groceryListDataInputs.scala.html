@@ -1,0 +1,40 @@
+@(groceryListForm: Form[GroceryList])(implicit requestContextData: RequestContextData, flash: Flash)
+
+<table id="recipe-ingredient-table" class="ingredient-table">
+  <tr>
+    <th class="ingredient-table">Recipe Name</th>
+    <th class="ingredient-table">Servings</th>
+  </tr>
+  @for(i <- groceryListForm("recipeServings").indexes) {
+    <tr>
+      <td class="ingredient-table"><input class="recipe-ingredient" type="text" name="recipeServings[@i].name" value="@groceryListForm("recipeServings")(s"[$i]")("name").value.getOrElse("")"></td>
+      <td class="ingredient-table"><input type="text" name="recipeServings[@i].desiredServings" value="@groceryListForm("recipeServings")(s"[$i]")("desiredServings").value.getOrElse("")"></td>
+      <td class="ingredient-table"><a class="delete">Remove</a></td>
+    </tr>
+  }
+</table>
+<p id="next-recipe-ingredient-index" class="next-index-field">@groceryListForm("recipeServings").indexes.length</p>
+<a id="add-recipe-serving-link">Add a recipe</a>
+<br>
+<br>
+<table id="food-ingredient-table" class="ingredient-table">
+  <tr>
+    <th class="ingredient-table">Food Name</th>
+    <th class="ingredient-table">Quantity</th>
+    <th class="ingredient-table">Unit</th>
+    <th class="ingredient-table">Store Section</th>
+  </tr>
+  @for(i <- groceryListForm("miscellaneous").indexes) {
+    <tr>
+      <td class="ingredient-table"><input class="food-ingredient-name" type="text" name="miscellaneous[@i].food" value="@groceryListForm("miscellaneous")(s"[$i]")("food").value.getOrElse("")"></td>
+      <td class="ingredient-table"><input type="text" name="miscellaneous[@i].quantity" value="@groceryListForm("miscellaneous")(s"[$i]")("quantity").value.getOrElse("")"></td>
+      <td class="ingredient-table"><input class="food-ingredient-unit" type="text" name="miscellaneous[@i].unit" value="@groceryListForm("miscellaneous")(s"[$i]")("unit").value.getOrElse("")"></td>
+      <td class="ingredient-table"><input class="food-ingredient-store-section" type="text" name="miscellaneous[@i].storeSection" value="@groceryListForm("miscellaneous")(s"[$i]")("storeSection").value.getOrElse("")"></td>
+      <td class="ingredient-table"><a class="delete">Remove</a></td>
+    </tr>
+  }
+</table>
+<p id="next-food-ingredient-index" class="next-index-field">@groceryListForm("miscellaneous").indexes.length</p>
+<a id="add-miscellaneous-link">Add a food</a>
+<br>
+<br>
