@@ -5,7 +5,7 @@
   <table>
   @for(recipeServing <- groceryList.recipeServings) {
     <tr>
-      <td class="ingredients-td">@recipeServing.name</td>
+      <td class="ingredients-td"><a href="@routes.RecipeController.viewRecipe(recipeServing.name).url">@recipeServing.name</a></td>
     </tr>
   }
   </table>
