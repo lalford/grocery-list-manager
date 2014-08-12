@@ -3,7 +3,7 @@
 @import helper.form
 
 @pageLayout {
-  @form(action = requestContextData.callWithRedirectUrl(routes.RecipeController.updateFormRecipe()), 'class -> "create-recipe-form") {
+  @form(action = routes.RecipeController.updateFormRecipe(), 'class -> "create-recipe-form") {
     <b><p>@recipeForm("name").value.getOrElse("")</p></b>
     <input type="text" name="name" value="@recipeForm("name").value.getOrElse("")" hidden="true">
     @recipeDataInputs(recipeForm)

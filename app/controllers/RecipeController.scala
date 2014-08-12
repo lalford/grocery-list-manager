@@ -81,12 +81,10 @@ class RecipeController(recipeService: RecipeService, groceryListService: Grocery
     }
   }
 
-  def updateFormRecipe = Action.async { implicit request =>
-    val redirectUrl = request.getQueryString("redirectUrl")
+  def updateFormRecipe = ActionHelper.async { implicit requestContext =>
     recipeForm.bindFromRequest.fold(
       formWithErrors => {
-        val result = redirectUrl.map(Redirect(_)).getOrElse(BadRequest(s"recipe form invalid. ${formWithErrors.errors.map(_.message).mkString}"))
-        Future.successful(result.flashing("error" -> formErrorsFlashing(formWithErrors)))
+        Future.successful(BadRequest(views.html.editRecipe(formWithErrors)))
       },
       boundRecipe => {
         val result = Promise[SimpleResult]()

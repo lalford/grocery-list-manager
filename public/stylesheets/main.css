@@ -77,6 +77,8 @@ h1 {
 
 .directions {
   font-size: 14px;
+  width: 600px;
+  height: 300px;
 }
 
 .add-grocery-list-form {
@@ -97,6 +99,12 @@ h1 {
 .ingredient-table {
   border-collapse: collapse;
   padding:5px;
+}
+
+.ingredient-table-errors {
+  border-collapse: collapse;
+  padding:5px;
+  color: red;
 }
 
 .next-index-field {

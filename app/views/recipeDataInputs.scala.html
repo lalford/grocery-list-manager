@@ -1,4 +1,4 @@
-@(recipeForm: Form[Recipe])(implicit requestContextData: RequestContextData, flash: Flash)
+@(recipeForm: Form[Recipe])
 
 @import helper.{inputText, textarea}
 
@@ -8,8 +8,16 @@
   <tr>
     <th class="ingredient-table">Recipe Name</th>
     <th class="ingredient-table">Servings</th>
+    <th></th>
   </tr>
   @for(i <- recipeForm("recipeIngredients").indexes) {
+    @if(recipeForm.hasErrors) {
+      <tr>
+        <td class="ingredient-table-errors">@recipeForm.errors(s"recipeIngredients[$i].name").headOption.map(_.withMessage("must exist").message).getOrElse("")</td>
+        <td class="ingredient-table-errors">@recipeForm.errors(s"recipeIngredients[$i].desiredServings").headOption.map(_.withMessage("must be > 0").message).getOrElse("")</td>
+        <td class="ingredient-table-errors"></td>
+      </tr>
+    }
     <tr>
       <td class="ingredient-table"><input class="recipe-ingredient" type="text" name="recipeIngredients[@i].name" value="@recipeForm("recipeIngredients")(s"[$i]")("name").value.getOrElse("")"></td>
       <td class="ingredient-table"><input type="text" name="recipeIngredients[@i].desiredServings" value="@recipeForm("recipeIngredients")(s"[$i]")("desiredServings").value.getOrElse("")"></td>
@@ -27,8 +35,18 @@
     <th class="ingredient-table">Quantity</th>
     <th class="ingredient-table">Unit</th>
     <th class="ingredient-table">Store Section</th>
+    <th></th>
   </tr>
   @for(i <- recipeForm("foodIngredients").indexes) {
+    @if(recipeForm.hasErrors) {
+      <tr>
+        <td class="ingredient-table-errors">@recipeForm.errors(s"foodIngredients[$i].food").headOption.map(_.withMessage("can't be empty").message).getOrElse("")</td>
+        <td class="ingredient-table-errors">@recipeForm.errors(s"foodIngredients[$i].quantity").headOption.map(_.withMessage("must be >= 0").message).getOrElse("")</td>
+        <td class="ingredient-table-errors">@recipeForm.errors(s"foodIngredients[$i].unit").headOption.map(_.withMessage("string").message).getOrElse("")</td>
+        <td class="ingredient-table-errors">@recipeForm.errors(s"foodIngredients[$i].storeSection").headOption.map(_.withMessage("string").message).getOrElse("")</td>
+        <td class="ingredient-table-errors"></td>
+      </tr>
+    }
     <tr>
       <td class="ingredient-table"><input class="food-ingredient-name" type="text" name="foodIngredients[@i].food" value="@recipeForm("foodIngredients")(s"[$i]")("food").value.getOrElse("")"></td>
       <td class="ingredient-table"><input type="text" name="foodIngredients[@i].quantity" value="@recipeForm("foodIngredients")(s"[$i]")("quantity").value.getOrElse("")"></td>
@@ -42,13 +60,19 @@
 <a id="add-food-ingredient-link">Add a food</a>
 <br>
 <br>
-@textarea(recipeForm("directions"), '_label -> "Directions")
+@textarea(recipeForm("directions"), '_label -> "Directions", 'class -> "directions")
 <b>Tags</b>
 <table id="tag-table" class="ingredient-table">
   <tr>
     <th>Tag Name</th>
   </tr>
   @for(i <- recipeForm("tags").indexes) {
+    @if(recipeForm.hasErrors) {
+      <tr>
+        <td class="ingredient-table-errors">@recipeForm.errors(s"tags[$i]").headOption.map(_.withMessage("string").message).getOrElse("")</td>
+        <td class="ingredient-table-errors"></td>
+      </tr>
+    }
     <tr>
       <td class="ingredient-table"><input type="text" name="tags[@i]" value="@recipeForm("tags")(s"[$i]").value.getOrElse("")"></td>
       <td class="ingredient-table"><a class="delete">Remove</a></td>
