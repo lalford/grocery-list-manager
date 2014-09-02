@@ -59,7 +59,7 @@
             </li>
             @if(requestContextData.activeGroceryList.isDefined) {
               @defining(requestContextData.activeGroceryList.get) { activeGroceryList =>
-                <li>@groceryListSidebarData(activeGroceryList.groceryList, activeGroceryList.groceryListUrl)</li>
+                <li>@groceryListSidebarData(activeGroceryList.groceryList, activeGroceryList.groceryListUrl, activeGroceryList.recipeNamesPlusOneEmbedLevel)</li>
               }
             }
           </ul>

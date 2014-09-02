@@ -1,12 +1,23 @@
-@(groceryList: GroceryList, groceryListUrl: String)
+@(groceryList: GroceryList, groceryListUrl: String, recipeNamesPlusOneEmbedLevel: List[(String, List[String])])
 
 <div class="panel-body">
   <b>Recipes</b>
   <table>
-  @for(recipeServing <- groceryList.recipeServings) {
-    <tr>
-      <td class="ingredients-td"><a href="@routes.RecipeController.viewRecipe(recipeServing.name).url">@recipeServing.name</a></td>
-    </tr>
+  @for(recipeNamePlusOneEmbedLevel <- recipeNamesPlusOneEmbedLevel) {
+    @defining(recipeNamePlusOneEmbedLevel._1) { recipeName =>
+      @defining(recipeNamePlusOneEmbedLevel._2) { embedRecipeNames =>
+        <tr>
+          <td class="ingredients-td"><a href="@routes.RecipeController.viewRecipe(recipeName).url">@recipeName</a></td>
+          <td class="ingredients-td"></td>
+        </tr>
+        @for(embedRecipeName <- embedRecipeNames) {
+          <tr>
+            <td class="ingredients-td"></td>
+            <td class="ingredients-td"><a href="@routes.RecipeController.viewRecipe(embedRecipeName).url">@embedRecipeName</a></td>
+          </tr>
+        }
+      }
+    }
   }
   </table>
   <br>
