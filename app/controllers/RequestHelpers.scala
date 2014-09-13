@@ -1,8 +1,10 @@
 package controllers
 
 import models._
+import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms._
+import scala.util.control.Exception.allCatch
 
 trait RequestHelpers {
   val emptyGroceryListForm = Form(
@@ -11,11 +13,11 @@ trait RequestHelpers {
 
   val recipeServingMapping = mapping(
     "name" -> nonEmptyText,
-    "desiredServings" -> bigDecimal.verifying(_ > 0)
+    "desiredServings" -> nonEmptyText.verifying(RequestHelpers.evaluate(_).isDefined)
   )(recipeServingApply)(recipeServingUnapply)
 
-  def recipeServingApply(name: RecipeName, desiredServings: BigDecimal) = RecipeServing(name, desiredServings.toDouble)
-  def recipeServingUnapply(recipeServing: RecipeServing) = Some( (recipeServing.name, BigDecimal(recipeServing.desiredServings)) )
+  def recipeServingApply(name: RecipeName, desiredServings: String) = RecipeServing(name, RequestHelpers.evaluate(desiredServings).get)
+  def recipeServingUnapply(recipeServing: RecipeServing) = Option( (recipeServing.name, recipeServing.desiredServings.toString) )
 
   val addRecipeServingForm = Form(
     mapping(
@@ -27,18 +29,18 @@ trait RequestHelpers {
 
   val foodIngredientMapping = mapping(
     "food" -> nonEmptyText,
-    "quantity" -> bigDecimal.verifying(_ >= 0),
+    "quantity" -> nonEmptyText.verifying(RequestHelpers.evaluate(_).isDefined),
     "unit" -> optional(nonEmptyText),
     "storeSection" -> optional(nonEmptyText)
   )(foodIngredientApply)(foodIngredientUnapply)
 
-  def foodIngredientApply(food: Food, quantity: BigDecimal, unit: Option[String], storeSection: Option[StoreSection]) = FoodIngredient(food, quantity.toDouble, unit, storeSection)
-  def foodIngredientUnapply(fi: FoodIngredient) = Some( (fi.food, BigDecimal(fi.quantity), fi.unit, fi.storeSection) )
+  def foodIngredientApply(food: Food, quantity: String, unit: Option[String], storeSection: Option[StoreSection]) = FoodIngredient(food, RequestHelpers.evaluate(quantity).get, unit, storeSection)
+  def foodIngredientUnapply(fi: FoodIngredient) = Some( (fi.food, fi.quantity.toString, fi.unit, fi.storeSection) )
 
   val recipeForm = Form(
     mapping(
       "name" -> nonEmptyText,
-      "servings" -> bigDecimal.verifying(_ > 0),
+      "servings" -> nonEmptyText.verifying(RequestHelpers.evaluate(_).isDefined),
       "foodIngredients" -> list(foodIngredientMapping),
       "recipeIngredients" -> list(recipeServingMapping),
       "directions" -> optional(text(maxLength = 10000)),
@@ -47,15 +49,15 @@ trait RequestHelpers {
   )
 
   def recipeApply(name: RecipeName,
-                  servings: BigDecimal,
+                  servings: String,
                   foodIngredients: List[FoodIngredient] = List(),
                   recipeIngredients: List[RecipeServing] = List(),
                   directions: Option[String] = None,
                   tags: List[String] = List()) = {
-    Recipe(name, servings.toDouble, foodIngredients, recipeIngredients, directions, tags)
+    Recipe(name, RequestHelpers.evaluate(servings).get, foodIngredients, recipeIngredients, directions, tags)
   }
 
-  def recipeUnapply(r: Recipe) = Some((r.name, BigDecimal(r.servings), r.foodIngredients, r.recipeIngredients, r.directions, r.tags))
+  def recipeUnapply(r: Recipe) = Some((r.name, r.servings.toString, r.foodIngredients, r.recipeIngredients, r.directions, r.tags))
 
   val groceryListForm = Form(
     mapping(
@@ -76,6 +78,23 @@ trait RequestHelpers {
   def formErrorsFlashing[T](formWithErrors: Form[T]) = {
     formWithErrors.errors.map(e => s"${e.key} - ${e.message}").mkString("\n")
   }
+}
+
+object RequestHelpers {
+  import javax.script.ScriptEngineManager
+
+  val mgr = new ScriptEngineManager()
+  val engine = mgr.getEngineByName("JavaScript")
+
+  def evaluate(expression: String): Option[Double] = allCatch.either(engine.eval(expression)).fold(bad, good)
+
+  private def bad(t: Throwable): Option[Double] = {
+    Logger.error("failed to evaluate expression", t)
+    None
+  }
+
+  // not ideal, but the expression evaluator is nice. It's a javascript engine so the result comes back as an object, but underneath it can be cast as a double
+  private def good(bd: Object): Option[Double] = Option(bd.asInstanceOf[Double])
 }
 
 case class AddRecipeServing(redirectUrl: String, activeGroceryList: String, recipeServing: RecipeServing)
