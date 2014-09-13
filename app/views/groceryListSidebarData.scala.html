@@ -8,12 +8,10 @@
       @defining(recipeNamePlusOneEmbedLevel._2) { embedRecipeNames =>
         <tr>
           <td class="ingredients-td"><a href="@routes.RecipeController.viewRecipe(recipeName).url">@recipeName</a></td>
-          <td class="ingredients-td"></td>
         </tr>
         @for(embedRecipeName <- embedRecipeNames) {
           <tr>
-            <td class="ingredients-td"></td>
-            <td class="ingredients-td"><a href="@routes.RecipeController.viewRecipe(embedRecipeName).url">@embedRecipeName</a></td>
+            <td class="ingredients-td"><a class="ingredients-td-embed" href="@routes.RecipeController.viewRecipe(embedRecipeName).url">@embedRecipeName</a></td>
           </tr>
         }
       }
