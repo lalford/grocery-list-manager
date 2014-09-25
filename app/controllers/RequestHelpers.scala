@@ -94,7 +94,11 @@ object RequestHelpers {
   }
 
   // not ideal, but the expression evaluator is nice. It's a javascript engine so the result comes back as an object, but underneath it can be cast as a double
-  private def good(bd: Object): Option[Double] = Option(bd.asInstanceOf[Double])
+  private def good: PartialFunction[Object, Option[Double]] = {
+    case v: Object if v.isInstanceOf[Int] => Option(v.asInstanceOf[Int].toDouble)
+    case v: Object if v.isInstanceOf[Double] => Option(v.asInstanceOf[Double])
+    case v: Object => Option(v.asInstanceOf[Double])
+  }
 }
 
 case class AddRecipeServing(redirectUrl: String, activeGroceryList: String, recipeServing: RecipeServing)
