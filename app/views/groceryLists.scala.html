@@ -13,7 +13,7 @@
           </h4>
         </div>
         <div id="collapse@i" class="panel-collapse collapse">
-          @groceryListData(groceryList, viewUrl = Some(routes.GroceryListController.viewGroceryList(groceryList.name).url), editUrl = Some(routes.GroceryListController.editGroceryList(groceryList.name).url), deleteUrl = Some(routes.GroceryListController.deleteGroceryList(groceryList.name).url))
+          @groceryListData(groceryList, viewUrl = Some(routes.GroceryListController.viewGroceryList(groceryList.name).url), editUrl = Some(routes.GroceryListController.editGroceryList(groceryList.name).url), deleteUrl = None)//Some(routes.GroceryListController.deleteGroceryList(groceryList.name).url))
         </div>
       </div>
     }
